@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using songbook_project_service.Context;
 
 namespace songbook_project_service
 {
@@ -33,6 +35,8 @@ namespace songbook_project_service
                     builder.AllowAnyOrigin().AllowAnyHeader();
                 });
             });
+            services.AddDbContext<SongbookDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("SongbookDevDb")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

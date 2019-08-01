@@ -1,4 +1,5 @@
 import React from "react";
+import { FormattedMessage } from "react-intl";
 import "./home.scss";
 import { config } from "../../utils/config";
 import { Button } from "react-bootstrap";
@@ -11,7 +12,9 @@ export class Home extends React.Component {
             <div>
                 <HomeHeader />
                 <div id="homeContent">
-                    <Button onClick={ () => appContext.history.push(config.clientRoutes.dashboard) }>Go to Dashboard</Button>
+                    <Button onClick={ () => appContext.history.push(config.clientRoutes.dashboard) }>
+                        <FormattedMessage id="home.goToDashboard" defaultMessage="Go to Dashboard" />
+                    </Button>
                 </div>
             </div>
         );
