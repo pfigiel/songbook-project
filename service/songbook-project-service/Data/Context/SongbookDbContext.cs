@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using songbook_project_service.Context.Translations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,5 @@ namespace songbook_project_service.Context
 
         public DbSet<TextAsset> TextAssets { get; set; }
         public DbSet<SongMetadata> SongMetadatas { get; set; }
-        public DbSet<SongVersion> SongVersions { get; set; }
     }
 }

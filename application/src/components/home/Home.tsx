@@ -3,7 +3,7 @@ import { FormattedMessage } from "react-intl";
 import "./home.scss";
 import { config } from "../../utils/config";
 import { Button } from "react-bootstrap";
-import { appContext } from "../../AppContext";
+import { appContext } from "../../utils/AppContext";
 import { HomeHeader } from "../homeHeader/HomeHeader";
 
 export class Home extends React.Component {

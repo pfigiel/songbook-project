@@ -1,23 +1,15 @@
 import React from "react";
-import { Button } from "react-bootstrap"
-import { IntlContext } from "../../utils/intlContext";
-import { languageNames } from "../../utils/LanguageNames";
+import "./languageSwitch.scss";
+import { Button } from "react-bootstrap";
+import { appContext } from "../../utils/AppContext";
 
-const LanguageSwitch = () => {
-    const { switchToEnglish, switchToPolish, locale } = React.useContext(IntlContext);
-    const IsPL = locale === languageNames.pl;
-    const IsEN = locale === languageNames.en;
-
+export class LanguageSwitch extends React.Component {
+  render() {
     return (
-        <div id="langSelectionDiv">
-            <Button disabled={IsPL} onClick={switchToPolish}>
-                POLISZ
-            </Button>
-            <Button disabled={IsEN} onClick={switchToEnglish}>
-                INGLISZ
-            </Button>
-        </div>
+      <div id="langSelectionDiv">
+        <Button onClick={appContext.switchToPolish}>PL</Button>
+        <Button onClick={appContext.switchToEnglish}>EN</Button>
+      </div>
     );
-};
-
-export default LanguageSwitch;
+  }
+}

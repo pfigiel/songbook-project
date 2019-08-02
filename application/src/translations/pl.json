@@ -1,3 +1,5 @@
 {
-    "home.goToDashboard": "Przejdź do tablicy"
+    "dashboard.view": "Wyświetl",
+    "home.goToDashboard": "Przejdź do tablicy",
+    "navbar.brand": "Songbook Project"
 }

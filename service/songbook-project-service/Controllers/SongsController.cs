@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using songbook_project_service.Context;
+using songbook_project_service.Data.Context.Translations;
 
 namespace songbook_project_service.Controllers
 {
@@ -18,16 +19,21 @@ namespace songbook_project_service.Controllers
         public SongbookDbContext Context { get; set; }
 
         [Route("/[controller]")]
-        public IEnumerable<string> Get()
+        public IEnumerable<object> Get()
         {
-            var songs = Context.SongMetadatas.Include("Title");
-            List<string> songTitles = new List<string>();
+            var language = Request.Headers["Accept-Language"];
+            var songs = Context.SongMetadatas.Include("Title").Include("Text");
+            var songsToSend = new List<object>();
             foreach (var song in songs)
             {
-                songTitles.Add(song.Title.TextEn);
+                songsToSend.Add(new
+                {
+                    title = Translator.Translate(song.Title, language),
+                    text = Translator.Translate(song.Text, language),
+                    artist = song.Artist,
+                });
             }
-
-            return songTitles;
+            return songsToSend;
         }
     }
 }

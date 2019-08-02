@@ -10,7 +10,7 @@ using songbook_project_service.Context;
 namespace songbook_project_service.Migrations
 {
     [DbContext(typeof(SongbookDbContext))]
-    [Migration("20190802131204_InitialMigration")]
+    [Migration("20190805122747_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,40 +29,17 @@ namespace songbook_project_service.Migrations
 
                     b.Property<string>("Artist");
 
-                    b.Property<int?>("DefaultSongVersionId");
+                    b.Property<int?>("TextId");
 
                     b.Property<int?>("TitleId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DefaultSongVersionId");
+                    b.HasIndex("TextId");
 
                     b.HasIndex("TitleId");
 
                     b.ToTable("SongMetadatas");
-                });
-
-            modelBuilder.Entity("songbook_project_service.Context.SongVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("SongMetadataId");
-
-                    b.Property<int?>("TextId");
-
-                    b.Property<int?>("VersionNameId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SongMetadataId");
-
-                    b.HasIndex("TextId");
-
-                    b.HasIndex("VersionNameId");
-
-                    b.ToTable("SongVersions");
                 });
 
             modelBuilder.Entity("songbook_project_service.Context.TextAsset", b =>
@@ -82,28 +59,13 @@ namespace songbook_project_service.Migrations
 
             modelBuilder.Entity("songbook_project_service.Context.SongMetadata", b =>
                 {
-                    b.HasOne("songbook_project_service.Context.SongVersion", "DefaultSongVersion")
-                        .WithMany()
-                        .HasForeignKey("DefaultSongVersionId");
-
-                    b.HasOne("songbook_project_service.Context.TextAsset", "Title")
-                        .WithMany()
-                        .HasForeignKey("TitleId");
-                });
-
-            modelBuilder.Entity("songbook_project_service.Context.SongVersion", b =>
-                {
-                    b.HasOne("songbook_project_service.Context.SongMetadata")
-                        .WithMany("SongVersions")
-                        .HasForeignKey("SongMetadataId");
-
                     b.HasOne("songbook_project_service.Context.TextAsset", "Text")
                         .WithMany()
                         .HasForeignKey("TextId");
 
-                    b.HasOne("songbook_project_service.Context.TextAsset", "VersionName")
+                    b.HasOne("songbook_project_service.Context.TextAsset", "Title")
                         .WithMany()
-                        .HasForeignKey("VersionNameId");
+                        .HasForeignKey("TitleId");
                 });
 #pragma warning restore 612, 618
         }

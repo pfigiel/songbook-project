@@ -1,18 +1,18 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { IntlProvider, addLocaleData } from "react-intl";
-import {  }
-import { App } from './App';
-import * as serviceWorker from './serviceWorker';
+import "bootstrap/dist/css/bootstrap.css";
+import React from "react";
+import ReactDOM from "react-dom";
+import { addLocaleData } from "react-intl";
+import { IntlProviderWrapper } from "./utils/IntlProviderWrapper";
+import { App } from "./components/app/App";
+import * as serviceWorker from "./serviceWorker";
 
-addLocaleData([])
+addLocaleData([]);
 
 ReactDOM.render(
-    <IntlProvider locale="en">
-        <App />
-    </IntlProvider>,
-    document.getElementById('root')
+    <IntlProviderWrapper>
+      <App />
+    </IntlProviderWrapper>,
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change
