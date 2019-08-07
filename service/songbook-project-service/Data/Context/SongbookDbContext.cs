@@ -11,6 +11,6 @@ namespace songbook_project_service.Context
         public SongbookDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<TextAsset> TextAssets { get; set; }
-        public DbSet<SongMetadata> SongMetadatas { get; set; }
+        public DbSet<Song> SongMetadatas { get; set; }
     }
 }

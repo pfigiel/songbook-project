@@ -4,6 +4,7 @@ import { appContext } from "../../utils/AppContext";
 import { config } from "../../utils/config";
 import { Home } from "../home/Home";
 import { Dashboard } from "../dashboard/Dashboard";
+import { SongScreen } from "../songScreen/SongScreen";
 
 export class App extends React.Component {
   render() {
@@ -15,6 +16,7 @@ export class App extends React.Component {
           path={config.clientRoutes.dashboard}
           component={Dashboard}
         />
+        <Route exact path={config.clientRoutes.song} component={SongScreen} />
       </Router>
     );
   }

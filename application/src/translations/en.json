@@ -1,5 +1,10 @@
 {
+    "common.goToDashboard": "Go to Dashboard",
     "dashboard.view": "View",
-    "home.goToDashboard": "Go to Dashboard",
-    "navbar.brand": "Songbook Project"
+    "navbar.brand": "Songbook Project",
+    "songScreen.next": "Next",
+    "songScreen.previous": "Previous",
+    "songsList.title": "Title",
+    "songsList.artist": "Artist",
+    "songsList.actions": "Actions"
 }

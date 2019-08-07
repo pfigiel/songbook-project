@@ -31,12 +31,14 @@ namespace songbook_project_service.Data
             {
                 var textAssets = new TextAsset[]
                 {
-                    new TextAsset() { TextEn = "Song 1", TextPl = "Piosenka 1" },
+                    new TextAsset() { TextPl = "Piosenka 1" },
                     new TextAsset() { TextEn = "Song 2", TextPl = "Piosenka 2" },
-                    new TextAsset() { TextEn = "Song 3", TextPl = "Piosenka 3" },
+                    new TextAsset() { TextEn = "Song 3" },
                     new TextAsset() { TextEn = "Song 1 Text", TextPl = "Piosenka 1 Tekst" },
                     new TextAsset() { TextEn = "Song 2 Text", TextPl = "Piosenka 2 Tekst" },
                     new TextAsset() { TextEn = "Song 3 Text", TextPl = "Piosenka 3 Tekst" },
+                    new TextAsset() { TextEn = "Song 2 Arrangement" },
+                    new TextAsset() { TextPl = "Aranżacja Piosenki 1" },
                 };
                 foreach (var textAsset in textAssets)
                 {
@@ -44,21 +46,23 @@ namespace songbook_project_service.Data
                 }
                 context.SaveChanges();
 
-                var songMetadatas = new SongMetadata[]
+                var songMetadatas = new Song[]
                 {
-                    new SongMetadata()
+                    new Song()
                     {
                         Artist = "Unknown",
                         Title = textAssets[0],
-                        Text = textAssets[3]
+                        Text = textAssets[3],
+                        Arrangement = textAssets[7]
                     },
-                    new SongMetadata()
+                    new Song()
                     {
                         Artist = "Unknown",
                         Title = textAssets[1],
-                        Text = textAssets[4]
+                        Text = textAssets[4],
+                        Arrangement = textAssets[6]
                     },
-                    new SongMetadata()
+                    new Song()
                     {
                         Artist = "Unknown",
                         Title = textAssets[2],

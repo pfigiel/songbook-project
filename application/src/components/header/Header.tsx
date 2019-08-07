@@ -8,12 +8,14 @@ export class Header extends React.Component {
   render() {
     return (
       <Navbar id="headerNavbar" bg="dark" variant="dark">
-        <Navbar.Brand>
-          <FormattedMessage
-            id="navbar.brand"
-            defaultMessage="Songbook Project"
-          />
-        </Navbar.Brand>
+        <a href="/">
+          <Navbar.Brand>
+            <FormattedMessage
+              id="navbar.brand"
+              defaultMessage="Songbook Project"
+            />
+          </Navbar.Brand>
+        </a>
         <LanguageSwitch />
       </Navbar>
     );

@@ -22,16 +22,22 @@ namespace songbook_project_service.Controllers
         public IEnumerable<object> Get()
         {
             var language = Request.Headers["Accept-Language"];
-            var songs = Context.SongMetadatas.Include("Title").Include("Text");
+            var songs = Context.SongMetadatas.OrderByDescending(song => song.Title).Include("Title").Include("Text");
             var songsToSend = new List<object>();
             foreach (var song in songs)
             {
-                songsToSend.Add(new
+                var title = Translator.Translate(song.Title, language);
+                var text = Translator.Translate(song.Text, language);
+                if (title != null && text != null)
                 {
-                    title = Translator.Translate(song.Title, language),
-                    text = Translator.Translate(song.Text, language),
-                    artist = song.Artist,
-                });
+                    songsToSend.Add(new
+                    {
+                        title,
+                        text,
+                        arrangement = Translator.Translate(song.Arrangement, language),
+                        artist = song.Artist,
+                    });
+                }
             }
             return songsToSend;
         }

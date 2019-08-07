@@ -13,7 +13,7 @@ export class Home extends React.Component {
                 <HomeHeader />
                 <div id="homeContent">
                     <Button onClick={ () => appContext.history.push(config.clientRoutes.dashboard) }>
-                        <FormattedMessage id="home.goToDashboard" defaultMessage="Go to Dashboard" />
+                        <FormattedMessage id="common.goToDashboard" defaultMessage="Go to Dashboard" />
                     </Button>
                 </div>
             </div>

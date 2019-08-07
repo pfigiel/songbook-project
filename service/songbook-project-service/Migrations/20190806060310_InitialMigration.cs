@@ -29,11 +29,18 @@ namespace songbook_project_service.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Artist = table.Column<string>(nullable: true),
                     TitleId = table.Column<int>(nullable: true),
+                    ArrangementId = table.Column<int>(nullable: true),
                     TextId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SongMetadatas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SongMetadatas_TextAssets_ArrangementId",
+                        column: x => x.ArrangementId,
+                        principalTable: "TextAssets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_SongMetadatas_TextAssets_TextId",
                         column: x => x.TextId,
@@ -47,6 +54,11 @@ namespace songbook_project_service.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SongMetadatas_ArrangementId",
+                table: "SongMetadatas",
+                column: "ArrangementId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SongMetadatas_TextId",

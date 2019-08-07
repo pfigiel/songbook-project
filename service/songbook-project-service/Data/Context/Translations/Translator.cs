@@ -16,6 +16,11 @@ namespace songbook_project_service.Data.Context.Translations
 
         public static string Translate(TextAsset asset, Languages language)
         {
+            if (asset == null)
+            {
+                return "";
+            }
+
             switch (language)
             {
                 case Languages.En:
@@ -35,6 +40,7 @@ namespace songbook_project_service.Data.Context.Translations
 
         private static Languages ParseLanguage(string language)
         {
+            language = language ?? "en";
             switch (language.ToLower())
             {
                 case "en":

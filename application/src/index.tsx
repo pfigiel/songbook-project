@@ -1,4 +1,6 @@
+import "./styles/reset.scss";
 import "bootstrap/dist/css/bootstrap.css";
+import "./styles/styles.scss";
 import React from "react";
 import ReactDOM from "react-dom";
 import { addLocaleData } from "react-intl";

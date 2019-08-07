@@ -10,7 +10,7 @@ using songbook_project_service.Context;
 namespace songbook_project_service.Migrations
 {
     [DbContext(typeof(SongbookDbContext))]
-    [Migration("20190805122747_InitialMigration")]
+    [Migration("20190806060310_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,11 +21,13 @@ namespace songbook_project_service.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("songbook_project_service.Context.SongMetadata", b =>
+            modelBuilder.Entity("songbook_project_service.Context.Song", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ArrangementId");
 
                     b.Property<string>("Artist");
 
@@ -34,6 +36,8 @@ namespace songbook_project_service.Migrations
                     b.Property<int?>("TitleId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ArrangementId");
 
                     b.HasIndex("TextId");
 
@@ -57,8 +61,12 @@ namespace songbook_project_service.Migrations
                     b.ToTable("TextAssets");
                 });
 
-            modelBuilder.Entity("songbook_project_service.Context.SongMetadata", b =>
+            modelBuilder.Entity("songbook_project_service.Context.Song", b =>
                 {
+                    b.HasOne("songbook_project_service.Context.TextAsset", "Arrangement")
+                        .WithMany()
+                        .HasForeignKey("ArrangementId");
+
                     b.HasOne("songbook_project_service.Context.TextAsset", "Text")
                         .WithMany()
                         .HasForeignKey("TextId");

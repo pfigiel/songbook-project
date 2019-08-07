@@ -1,0 +1,13 @@
+#songRow {
+    padding: 5px;
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+div.spinner-border {
+    height: 5rem;
+    width: 5rem;
+    border-width: 0.5rem;
+    margin: calc(50% - 2.5rem) 0 0 calc(50% - 2.5rem);
+}
