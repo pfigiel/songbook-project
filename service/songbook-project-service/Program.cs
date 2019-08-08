@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using songbook_project_service.Context;
 using songbook_project_service.Data;
+using songbook_project_service.Data.IdentityContext;
 
 namespace songbook_project_service
 {
@@ -18,22 +19,6 @@ namespace songbook_project_service
         public static void Main(string[] args)
         {
             var host = CreateWebHostBuilder(args).Build();
-
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                try
-                {
-                    var context = services.GetRequiredService<SongbookDbContext>();
-                    DbInitializer.Initialize(context);
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occured while seeding the database");
-                }
-            }
-
             host.Run();
         }
 

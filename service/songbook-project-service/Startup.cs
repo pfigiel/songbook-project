@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using songbook_project_service.Context;
+using songbook_project_service.Data;
 using songbook_project_service.Data.IdentityContext;
 using songbook_project_service.Utils;
 
@@ -40,6 +41,8 @@ namespace songbook_project_service
             });
             services.AddDbContext<SongbookDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SongbookDevDb")));
+            services.AddDbContext<SongbookIdentityDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("SongbookDevDb")));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<SongbookIdentityDbContext>().AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(options =>
             {
@@ -49,7 +52,9 @@ namespace songbook_project_service
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
             });
-            services.AddTransient<Mailer, Mailer>();
+            services.AddTransient<IMailer, Mailer>();
+            services.AddTransient<IRequestBodyParser, RequestBodyParser>();
+            services.AddLogging();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -70,6 +75,8 @@ namespace songbook_project_service
             app.UseCors(OriginsPolicy);
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            DbInitializer.EnsurePopulated(app, Configuration);
         }
     }
 }

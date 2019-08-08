@@ -10,7 +10,7 @@ using songbook_project_service.Context;
 namespace songbook_project_service.Migrations
 {
     [DbContext(typeof(SongbookDbContext))]
-    [Migration("20190806060310_InitialMigration")]
+    [Migration("20190808094855_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

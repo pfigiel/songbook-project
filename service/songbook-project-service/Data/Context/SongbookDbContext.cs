@@ -8,7 +8,7 @@ namespace songbook_project_service.Context
 {
     public class SongbookDbContext : DbContext
     {
-        public SongbookDbContext(DbContextOptions options) : base(options) { }
+        public SongbookDbContext(DbContextOptions<SongbookDbContext> options) : base(options) { }
 
         public DbSet<TextAsset> TextAssets { get; set; }
         public DbSet<Song> SongMetadatas { get; set; }

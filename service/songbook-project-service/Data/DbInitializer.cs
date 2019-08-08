@@ -1,4 +1,10 @@
-﻿using songbook_project_service.Context;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using songbook_project_service.Context;
+using songbook_project_service.Data.IdentityContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +14,24 @@ namespace songbook_project_service.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(SongbookDbContext context)
+        public static void EnsurePopulated(IApplicationBuilder app, IConfiguration configuration)
+        {
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                var context = (SongbookDbContext)serviceScope.ServiceProvider.GetService(typeof(SongbookDbContext));
+                context.Database.Migrate();
+                Initialize(context);
+                context.Database.CloseConnection();
+
+                var identityContext = (SongbookIdentityDbContext)serviceScope.ServiceProvider.GetService(typeof(SongbookIdentityDbContext));
+                var roleManager = (RoleManager<IdentityRole>)serviceScope.ServiceProvider.GetService(typeof(RoleManager<IdentityRole>));
+                var userManager = (UserManager<IdentityUser>)serviceScope.ServiceProvider.GetService(typeof(UserManager<IdentityUser>));
+                identityContext.Database.Migrate();
+                InitializeIdentity(identityContext, roleManager, userManager, configuration);
+            }
+        }
+
+        private static void Initialize(SongbookDbContext context)
         {
             context.Database.EnsureCreated();
 
@@ -74,6 +97,43 @@ namespace songbook_project_service.Data
                     context.SongMetadatas.Add(songMetadata);
                 }
                 context.SaveChanges();
+            }
+        }
+
+        private static void InitializeIdentity(
+            SongbookIdentityDbContext context,
+            RoleManager<IdentityRole> roleManager,
+            UserManager<IdentityUser> userManager,
+            IConfiguration configuration)
+        {
+            context.Database.EnsureCreated();
+
+            if (!context.Roles.Any())
+            {
+                var adminRole = new IdentityRole
+                {
+                    Name = RoleNames.Admin
+                };
+                var defaultRole = new IdentityRole
+                {
+                    Name = RoleNames.Default
+                };
+                roleManager.CreateAsync(adminRole);
+                roleManager.CreateAsync(defaultRole);
+                context.Roles.Add(adminRole);
+                context.Roles.Add(defaultRole);
+            }
+
+            if (!context.Users.Any())
+            {
+                var user = new IdentityUser()
+                {
+                    UserName = configuration.GetValue<string>("InitialAdminCredentials:UserName"),
+                    Email = configuration.GetValue<string>("InitialAdminCredentials:Email"),
+                };
+                userManager.CreateAsync(user, configuration.GetValue<string>("InitialAdminCredentials:Password")).Wait();
+                userManager.AddToRoleAsync(user, RoleNames.Admin).Wait();
+                context.Users.Add(user);
             }
         }
     }

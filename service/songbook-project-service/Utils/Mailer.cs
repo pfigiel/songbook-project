@@ -9,21 +9,22 @@ using System.Threading.Tasks;
 
 namespace songbook_project_service.Utils
 {
-    public class Mailer
+    public class Mailer : IMailer
     {
         private readonly SmtpClient client;
         private readonly IConfiguration configuration;
         private readonly ILogger logger;
 
-        public Mailer(IConfiguration configuration, ILogger logger)
+        public Mailer(IConfiguration configuration, ILogger<Mailer> logger)
         {
             this.configuration = configuration;
             this.logger = logger;
-            client = new SmtpClient(configuration.GetValue<string>("SmtpServerName"))
+            client = new SmtpClient(configuration.GetValue<string>("Mailer:SmtpServerName"))
             {
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(configuration.GetValue<string>("SmtpUsername"), configuration.GetValue<string>("SmtpPassword")),
-                Port = configuration.GetValue<int>("SmtpPort")
+                Credentials = new NetworkCredential(configuration.GetValue<string>("Mailer:SmtpUsername"), configuration.GetValue<string>("Mailer:SmtpPassword")),
+                Port = configuration.GetValue<int>("Mailer:SmtpPort"),
+                EnableSsl = true
             };
         }
 
@@ -35,11 +36,11 @@ namespace songbook_project_service.Utils
                 string.Format("Hello, please click the link below to activate your account\r\n{0}", activationLink));
         }
 
-        public bool SendMessage(string[] recipients, string subject, string body)
+        private bool SendMessage(string[] recipients, string subject, string body)
         {
             MailMessage mailMessage = new MailMessage
             {
-                From = new MailAddress(configuration.GetValue<string>("SmtpUsername")),
+                From = new MailAddress(configuration.GetValue<string>("Mailer:SmtpUsername")),
                 Body = body,
                 Subject = subject
             };
