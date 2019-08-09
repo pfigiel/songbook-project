@@ -7,8 +7,8 @@ namespace songbook_project_service.Data
 {
     public class RoleNames
     {
-        public static string Default = "Default";
-        public static string Editor = "Editor";
-        public static string Admin = "Admin";
+        public const string Default = "Default";
+        public const string Editor = "Editor";
+        public const string Admin = "Admin";
     }
 }
