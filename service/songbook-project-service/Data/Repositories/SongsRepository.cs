@@ -19,5 +19,15 @@ namespace songbook_project_service.Data.Repositories
         {
             return context.Songs.Find(filter);
         }
+
+        public IEnumerable<Song> GetSongs(Song filter)
+        {
+            return context.Songs.Where(song => song.Arrangement == filter.Arrangement);
+            //var filteredSongs = new List<Song>();
+            //foreach (var song in context.Songs)
+            //{
+            //    if (song.)
+            //}
+        }
     }
 }
