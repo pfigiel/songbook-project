@@ -3,35 +3,50 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using songbook_project_service.Context;
-using songbook_project_service.Data.IdentityContext;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.Options;
+using songbook_project_service.Entities;
+using songbook_project_service.Utils;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace songbook_project_service.Data
 {
-    public static class DbInitializer
+    public class DbInitializer : IDbInitializer
     {
-        public static void EnsurePopulated(IApplicationBuilder app, IConfiguration configuration)
+        private readonly SongbookDbContext context;
+        private readonly SongbookIdentityDbContext identityContext;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly InitialAdminCredentials adminCredentials;
+
+        public DbInitializer(
+            SongbookDbContext context,
+            SongbookIdentityDbContext identityContext,
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IOptions<InitialAdminCredentials> adminCredentialOptions)
+        {
+            this.context = context;
+            this.identityContext = identityContext;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            adminCredentials = adminCredentialOptions.Value;
+        }
+
+        public async Task EnsurePopulated(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
-                var context = (SongbookDbContext)serviceScope.ServiceProvider.GetService(typeof(SongbookDbContext));
                 context.Database.Migrate();
-                Initialize(context);
+                Initialize();
                 context.Database.CloseConnection();
 
-                var identityContext = (SongbookIdentityDbContext)serviceScope.ServiceProvider.GetService(typeof(SongbookIdentityDbContext));
-                var roleManager = (RoleManager<IdentityRole>)serviceScope.ServiceProvider.GetService(typeof(RoleManager<IdentityRole>));
-                var userManager = (UserManager<IdentityUser>)serviceScope.ServiceProvider.GetService(typeof(UserManager<IdentityUser>));
                 identityContext.Database.Migrate();
-                InitializeIdentity(identityContext, roleManager, userManager, configuration);
+                await InitializeIdentityAsync();
             }
         }
 
-        private static void Initialize(SongbookDbContext context)
+        private void Initialize()
         {
             context.Database.EnsureCreated();
 
@@ -100,15 +115,11 @@ namespace songbook_project_service.Data
             }
         }
 
-        private static void InitializeIdentity(
-            SongbookIdentityDbContext context,
-            RoleManager<IdentityRole> roleManager,
-            UserManager<IdentityUser> userManager,
-            IConfiguration configuration)
+        private async Task InitializeIdentityAsync()
         {
-            context.Database.EnsureCreated();
+            identityContext.Database.EnsureCreated();
 
-            if (!context.Roles.Any())
+            if (!identityContext.Roles.Any())
             {
                 var adminRole = new IdentityRole
                 {
@@ -118,22 +129,22 @@ namespace songbook_project_service.Data
                 {
                     Name = RoleNames.Default
                 };
-                roleManager.CreateAsync(adminRole);
-                roleManager.CreateAsync(defaultRole);
-                context.Roles.Add(adminRole);
-                context.Roles.Add(defaultRole);
+                await roleManager.CreateAsync(adminRole);
+                await roleManager.CreateAsync(defaultRole);
+                identityContext.Roles.Add(adminRole);
+                identityContext.Roles.Add(defaultRole);
             }
 
-            if (!context.Users.Any())
+            if (!identityContext.Users.Any())
             {
                 var user = new IdentityUser()
                 {
-                    UserName = configuration.GetValue<string>("InitialAdminCredentials:UserName"),
-                    Email = configuration.GetValue<string>("InitialAdminCredentials:Email"),
+                    UserName = adminCredentials.UserName,
+                    Email = adminCredentials.Email
                 };
-                userManager.CreateAsync(user, configuration.GetValue<string>("InitialAdminCredentials:Password")).Wait();
-                userManager.AddToRoleAsync(user, RoleNames.Admin).Wait();
-                context.Users.Add(user);
+                await userManager.CreateAsync(user, adminCredentials.Password);
+                await userManager.AddToRoleAsync(user, RoleNames.Admin);
+                identityContext.Users.Add(user);
             }
         }
     }

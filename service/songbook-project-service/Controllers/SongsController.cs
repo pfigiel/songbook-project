@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using songbook_project_service.Context;
-using songbook_project_service.Data.Context.Translations;
+using songbook_project_service.Data;
+using songbook_project_service.Services;
 
 namespace songbook_project_service.Controllers
 {
@@ -26,15 +24,15 @@ namespace songbook_project_service.Controllers
             var songsToSend = new List<object>();
             foreach (var song in songs)
             {
-                var title = Translator.Translate(song.Title, language);
-                var text = Translator.Translate(song.Text, language);
+                var title = TranslatorService.Translate(song.Title, language);
+                var text = TranslatorService.Translate(song.Text, language);
                 if (title != null && text != null)
                 {
                     songsToSend.Add(new
                     {
                         title,
                         text,
-                        arrangement = Translator.Translate(song.Arrangement, language),
+                        arrangement = TranslatorService.Translate(song.Arrangement, language),
                         artist = song.Artist,
                     });
                 }

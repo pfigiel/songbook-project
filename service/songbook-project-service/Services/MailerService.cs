@@ -7,15 +7,15 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
-namespace songbook_project_service.Utils
+namespace songbook_project_service.Services
 {
-    public class Mailer : IMailer
+    public class MailerService : IMailerService
     {
         private readonly SmtpClient client;
         private readonly IConfiguration configuration;
         private readonly ILogger logger;
 
-        public Mailer(IConfiguration configuration, ILogger<Mailer> logger)
+        public MailerService(IConfiguration configuration, ILogger<MailerService> logger)
         {
             this.configuration = configuration;
             this.logger = logger;

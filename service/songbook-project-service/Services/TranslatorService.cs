@@ -1,12 +1,8 @@
-﻿using songbook_project_service.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using songbook_project_service.Entities;
 
-namespace songbook_project_service.Data.Context.Translations
+namespace songbook_project_service.Services
 {
-    public class Translator
+    public class TranslatorService
     {
         public enum Languages
         {

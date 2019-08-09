@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace songbook_project_service.Utils
+namespace songbook_project_service.Services
 {
-    public interface IMailer
+    public interface IMailerService
     {
         bool SendAccountActivationMessage(string recipient, string activationLink);
     }

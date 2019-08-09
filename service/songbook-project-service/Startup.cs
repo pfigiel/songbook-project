@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using songbook_project_service.Context;
 using songbook_project_service.Data;
-using songbook_project_service.Data.IdentityContext;
+using songbook_project_service.Services;
 using songbook_project_service.Utils;
 
 namespace songbook_project_service
@@ -73,14 +67,16 @@ namespace songbook_project_service
                     ValidateAudience = false
                 };
             });
-            services.AddTransient<IMailer, Mailer>();
-            services.AddTransient<IRequestBodyParser, RequestBodyParser>();
+            services.Configure<InitialAdminCredentials>(Configuration.GetSection("InitialAdminCredentials"));
+            services.AddTransient<IMailerService, MailerService>();
+            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IDbInitializer, DbInitializer>();
             services.AddLogging();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -97,7 +93,7 @@ namespace songbook_project_service
             app.UseHttpsRedirection();
             app.UseMvc();
 
-            DbInitializer.EnsurePopulated(app, Configuration);
+            dbInitializer.EnsurePopulated(app).Wait();
         }
     }
 }
