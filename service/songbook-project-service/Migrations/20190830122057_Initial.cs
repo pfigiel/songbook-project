@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace songbook_project_service.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,7 +22,7 @@ namespace songbook_project_service.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SongMetadatas",
+                name: "Songs",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -34,21 +34,21 @@ namespace songbook_project_service.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SongMetadatas", x => x.Id);
+                    table.PrimaryKey("PK_Songs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SongMetadatas_TextAssets_ArrangementId",
+                        name: "FK_Songs_TextAssets_ArrangementId",
                         column: x => x.ArrangementId,
                         principalTable: "TextAssets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SongMetadatas_TextAssets_TextId",
+                        name: "FK_Songs_TextAssets_TextId",
                         column: x => x.TextId,
                         principalTable: "TextAssets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_SongMetadatas_TextAssets_TitleId",
+                        name: "FK_Songs_TextAssets_TitleId",
                         column: x => x.TitleId,
                         principalTable: "TextAssets",
                         principalColumn: "Id",
@@ -56,25 +56,25 @@ namespace songbook_project_service.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_SongMetadatas_ArrangementId",
-                table: "SongMetadatas",
+                name: "IX_Songs_ArrangementId",
+                table: "Songs",
                 column: "ArrangementId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SongMetadatas_TextId",
-                table: "SongMetadatas",
+                name: "IX_Songs_TextId",
+                table: "Songs",
                 column: "TextId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SongMetadatas_TitleId",
-                table: "SongMetadatas",
+                name: "IX_Songs_TitleId",
+                table: "Songs",
                 column: "TitleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "SongMetadatas");
+                name: "Songs");
 
             migrationBuilder.DropTable(
                 name: "TextAssets");

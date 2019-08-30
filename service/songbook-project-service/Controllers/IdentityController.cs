@@ -56,6 +56,20 @@ namespace songbook_project_service.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("activate/{activationCode}")]
+        public async Task<IActionResult> Activate(string activationCode)
+        {
+            if (await service.ActivateAsync(activationCode))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpPost]
         [Route("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]User user)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using songbook_project_service.Data;
 
 namespace songbook_project_service.Migrations
@@ -18,7 +19,7 @@ namespace songbook_project_service.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("songbook_project_service.Context.Song", b =>
+            modelBuilder.Entity("songbook_project_service.Entities.Song", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,10 +41,10 @@ namespace songbook_project_service.Migrations
 
                     b.HasIndex("TitleId");
 
-                    b.ToTable("SongMetadatas");
+                    b.ToTable("Songs");
                 });
 
-            modelBuilder.Entity("songbook_project_service.Context.TextAsset", b =>
+            modelBuilder.Entity("songbook_project_service.Entities.TextAsset", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,17 +59,17 @@ namespace songbook_project_service.Migrations
                     b.ToTable("TextAssets");
                 });
 
-            modelBuilder.Entity("songbook_project_service.Context.Song", b =>
+            modelBuilder.Entity("songbook_project_service.Entities.Song", b =>
                 {
-                    b.HasOne("songbook_project_service.Context.TextAsset", "Arrangement")
+                    b.HasOne("songbook_project_service.Entities.TextAsset", "Arrangement")
                         .WithMany()
                         .HasForeignKey("ArrangementId");
 
-                    b.HasOne("songbook_project_service.Context.TextAsset", "Text")
+                    b.HasOne("songbook_project_service.Entities.TextAsset", "Text")
                         .WithMany()
                         .HasForeignKey("TextId");
 
-                    b.HasOne("songbook_project_service.Context.TextAsset", "Title")
+                    b.HasOne("songbook_project_service.Entities.TextAsset", "Title")
                         .WithMany()
                         .HasForeignKey("TitleId");
                 });

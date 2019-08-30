@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using songbook_project_service.Data;
 
 namespace songbook_project_service.Migrations.SongbookIdentityDb
 {
     [DbContext(typeof(SongbookIdentityDbContext))]
-    [Migration("20190808094914_InitialIdentityMigration")]
-    partial class InitialIdentityMigration
+    [Migration("20190830122109_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

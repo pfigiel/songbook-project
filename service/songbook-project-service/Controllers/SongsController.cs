@@ -20,7 +20,7 @@ namespace songbook_project_service.Controllers
         public IEnumerable<object> Get()
         {
             var language = Request.Headers["Accept-Language"];
-            var songs = Context.SongMetadatas.OrderByDescending(song => song.Title).Include("Title").Include("Text");
+            var songs = Context.Songs.OrderByDescending(song => song.Title).Include("Title").Include("Text");
             var songsToSend = new List<object>();
             foreach (var song in songs)
             {

@@ -38,7 +38,6 @@ namespace songbook_project_service.Services
 
         public async Task<bool> RegisterAsync(User user, HttpContext context)
         {
-            var executionResult = new IdentityResult();
             var identityUser = new IdentityUser
             {
                 Email = user.Email,
@@ -77,7 +76,7 @@ namespace songbook_project_service.Services
         {
             user.Token = null;
             var identityUser = await userManager.FindByEmailAsync(user.Email);
-            if (identityUser == null)
+            if (identityUser == null || !identityUser.EmailConfirmed)
             {
                 return user;
             }
@@ -108,6 +107,21 @@ namespace songbook_project_service.Services
 
             user.Password = null;
             return user;
+        }
+
+        public async Task<bool> ActivateAsync(string activationCode)
+        {
+            var identityUser = await userManager.FindByIdAsync(activationCode);
+            if (identityUser != null)
+            {
+                identityUser.EmailConfirmed = true;
+                await userManager.UpdateAsync(identityUser);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

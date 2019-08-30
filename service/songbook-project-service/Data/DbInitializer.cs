@@ -51,11 +51,11 @@ namespace songbook_project_service.Data
             context.Database.EnsureCreated();
 
             // Some of the collections are empty, some are not - unexpected situation, clear collections
-            if (context.SongMetadatas.Any() ^ context.TextAssets.Any())
+            if (context.Songs.Any() ^ context.TextAssets.Any())
             {
-                foreach (var songMetadata in context.SongMetadatas)
+                foreach (var songMetadata in context.Songs)
                 {
-                    context.SongMetadatas.Remove(songMetadata);
+                    context.Songs.Remove(songMetadata);
                 }
                 foreach (var textAsset in context.TextAssets)
                 {
@@ -65,7 +65,7 @@ namespace songbook_project_service.Data
             }
 
             // All collections are empty - populate
-            if (!context.SongMetadatas.Any() && !context.TextAssets.Any())
+            if (!context.Songs.Any() && !context.TextAssets.Any())
             {
                 var textAssets = new TextAsset[]
                 {
@@ -109,7 +109,7 @@ namespace songbook_project_service.Data
                 };
                 foreach (var songMetadata in songMetadatas)
                 {
-                    context.SongMetadatas.Add(songMetadata);
+                    context.Songs.Add(songMetadata);
                 }
                 context.SaveChanges();
             }
