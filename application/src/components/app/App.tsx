@@ -5,19 +5,23 @@ import { config } from "../../utils/config";
 import { Home } from "../home/Home";
 import { Dashboard } from "../dashboard/Dashboard";
 import { SongScreen } from "../songScreen/SongScreen";
+import { Provider } from "react-redux";
+import { store } from "../../store/index";
 
 export class App extends React.Component {
   render() {
     return (
-      <Router history={appContext.history}>
-        <Route exact path={config.clientRoutes.home} component={Home} />
-        <Route
-          exact
-          path={config.clientRoutes.dashboard}
-          component={Dashboard}
-        />
-        <Route exact path={config.clientRoutes.song} component={SongScreen} />
-      </Router>
+      <Provider store={store}>
+        <Router history={appContext.history}>
+          <Route exact path={config.clientRoutes.home} component={Home} />
+          <Route
+            exact
+            path={config.clientRoutes.dashboard}
+            component={Dashboard}
+          />
+          <Route exact path={config.clientRoutes.song} component={SongScreen} />
+        </Router>
+      </Provider>
     );
   }
 }

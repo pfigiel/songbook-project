@@ -2,6 +2,8 @@
     "common.goToDashboard": "Go to Dashboard",
     "dashboard.view": "View",
     "navbar.brand": "Songbook Project",
+    "resultMessage.wrongEmailOrPassword": "Provoded email address and/or password is incorrect. Please try again.",
+    "resultMessage.serverError": "The site is experiencing technical issues. Please try again later.",
     "songScreen.next": "Next",
     "songScreen.previous": "Previous",
     "songsList.title": "Title",

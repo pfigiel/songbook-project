@@ -1,13 +1,15 @@
 import React from "react";
 import "./dashboardSidebar.scss";
 import { Form, Button, FormControlProps } from "react-bootstrap";
+import { IdentityService } from "../../services/identity/IdentityService";
 
 interface IProps {}
 
 interface IState {
     email: string;
     password: string;
-  }
+    isLoggedIn: boolean;
+}
 
 export class DashboardSidebar extends React.Component<IProps, IState> {
     onEmailChange = (event: React.FormEvent<FormControlProps>) => {
@@ -21,21 +23,24 @@ export class DashboardSidebar extends React.Component<IProps, IState> {
     onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         event.stopPropagation();
-        const result = await fetch("https://localhost:44340/identity/authenticate", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                Email: this.state.email,
-                Password: this.state.password
-            })
-        });
-        if (result.status === 200) {
-            console.log("GIT");
-        } else {
-            console.error("UNAUTHORIZED");
-        }
+        await new IdentityService().authenticate(this.state.email, this.state.password);
+        // const response = await fetch("https://localhost:44340/identity/authenticate", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify({
+        //         Email: this.state.email,
+        //         Password: this.state.password
+        //     })
+        // });
+        // if (response.status === 200) {
+        //     this.setState({ isLoggedIn: true });
+        //     const loginData = await response.json();
+        //     console.log(await response.json());
+        // } else {
+        //     console.error("UNAUTHORIZED");
+        // }
     }
 
     render() {

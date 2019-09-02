@@ -2,6 +2,8 @@
     "common.goToDashboard": "Przejdź do tablicy",
     "dashboard.view": "Wyświetl",
     "navbar.brand": "Songbook Project",
+    "resultMessage.wrongEmailOrPassword": "Podany adres email i/lub hasło są nieprawidłowe. Spróbuj ponownie.",
+    "resultMessage.serverError": "Nie mo",
     "songScreen.next": "Następna",
     "songScreen.previous": "Poprzednia",
     "songsList.title": "Tytuł",
