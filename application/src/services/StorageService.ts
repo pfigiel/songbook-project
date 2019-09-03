@@ -1,11 +1,11 @@
 export class StorageService {
-    public static jwtToken: string = "jwtToken";
+    public static JWT_TOKEN: string = "jwtToken";
 
-    public get(name: string): any {
+    public static get(name: string): any {
         return localStorage.getItem(name);
     }
 
-    public set(name: string, value: any): void {
+    public static set(name: string, value: any): void {
         localStorage.setItem(name, value);
     }
 }

@@ -9,6 +9,7 @@
     "@types/react": "^16.8.23",
     "@types/react-dom": "16.8.5",
     "@types/react-intl": "^2.3.18",
+    "@types/react-redux": "^7.1.2",
     "@types/react-router": "^5.0.3",
     "@types/react-router-dom": "^4.3.4",
     "@types/universal-cookie": "^2.2.0",
@@ -45,5 +46,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "redux-saga": "^1.0.5"
   }
 }

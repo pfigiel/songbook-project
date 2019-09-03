@@ -1,4 +1,3 @@
-import { LoginAction } from "../actions/login";
 import * as actionTypes from "../actions/actionTypes";
 import { State } from "../models/State";
 import { Action } from "redux";
@@ -10,11 +9,15 @@ const initialState: State = {
 const rootReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case actionTypes.LOGIN:
-            console.log("LOGGIN IN");
             return {
                 ...state,
                 isLoggedIn: true
             };
+        case actionTypes.SIGN_OUT:
+            return {
+                ...state,
+                isLoggedIn: false
+            }
         default:
             return state;
     }

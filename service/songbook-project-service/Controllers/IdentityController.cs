@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using songbook_project_service.Entities;
 using songbook_project_service.Services;
@@ -83,6 +84,30 @@ namespace songbook_project_service.Controllers
             {
                 return Unauthorized();
             }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("validateToken")]
+        public IActionResult ValidateToken()
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("signOut")]
+        public async Task<IActionResult> SignOutAsync()
+        {
+            if (Request.Headers.TryGetValue("Authorization", out var token))
+            {
+                if (await service.SignOutAsync(token))
+                {
+                    return Ok();
+                }
+            }
+
+            return BadRequest();
         }
     }
 }

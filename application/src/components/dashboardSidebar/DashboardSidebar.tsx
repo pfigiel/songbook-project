@@ -2,16 +2,47 @@ import React from "react";
 import "./dashboardSidebar.scss";
 import { Form, Button, FormControlProps } from "react-bootstrap";
 import { IdentityService } from "../../services/identity/IdentityService";
+import { AuthenticateResult } from "../../services/identity/AuthenticateResult";
+import { connect } from "react-redux";
+import { State } from "../../store/models/State";
+import { FormattedMessage } from "react-intl";
 
-interface IProps {}
+interface IProps {
+    isLoggedIn: boolean;
+}
 
 interface IState {
     email: string;
     password: string;
-    isLoggedIn: boolean;
+    isLoginWrongCredentialsError: boolean;
+    isLoginServerError: boolean;
 }
 
-export class DashboardSidebar extends React.Component<IProps, IState> {
+const mapStateToProps = (state: State) => {
+    return {
+        isLoggedIn: state.isLoggedIn
+    }
+}
+
+class ConnectedDashboardSidebar extends React.Component<IProps, IState> {
+    state = {
+        email: "",
+        password: "",
+        isLoginWrongCredentialsError: false,
+        isLoginServerError: false
+    }
+
+    identityService: IdentityService;
+
+    constructor(props: IProps, state: IState) {
+        super(props, state);
+        this.identityService = new IdentityService();
+    }
+
+    async componentDidMount() {
+        // await this.identityService.validateToken();
+    }
+
     onEmailChange = (event: React.FormEvent<FormControlProps>) => {
         this.setState({ email: event.currentTarget.value as string })
     }
@@ -23,43 +54,70 @@ export class DashboardSidebar extends React.Component<IProps, IState> {
     onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         event.stopPropagation();
-        await new IdentityService().authenticate(this.state.email, this.state.password);
-        // const response = await fetch("https://localhost:44340/identity/authenticate", {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify({
-        //         Email: this.state.email,
-        //         Password: this.state.password
-        //     })
-        // });
-        // if (response.status === 200) {
-        //     this.setState({ isLoggedIn: true });
-        //     const loginData = await response.json();
-        //     console.log(await response.json());
-        // } else {
-        //     console.error("UNAUTHORIZED");
-        // }
+        const result = await this.identityService.authenticate(this.state.email, this.state.password);
+        if (result.isSuccess) {
+            this.setState({
+                isLoginWrongCredentialsError: false,
+                isLoginServerError: false
+            });
+        } else {
+            switch (result.error) {
+                case AuthenticateResult.WRONG_CREDENTIALS:
+                    this.setState({
+                        isLoginWrongCredentialsError: true,
+                        isLoginServerError: false
+                    });
+                    break;
+                case AuthenticateResult.SERVER_ERROR:
+                    this.setState({
+                        isLoginServerError: true,
+                        isLoginWrongCredentialsError: false
+                    });
+                    break;
+            }
+        }
+    }
+
+    signOut = async () => {
+        await this.identityService.signOut();
     }
 
     render() {
         return (
             <div id="dashboardSidebarWrapper">
-                <Form onSubmit={this.onSubmit}>
-                    <Form.Group controlId="loginFormEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" onChange={this.onEmailChange} />
-                    </Form.Group>
-                    <Form.Group controlId="loginFormPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" onChange={this.onPasswordChange} />
-                    </Form.Group>
-                    <Button variant="primary" type="submit">
-                        Log in
-                    </Button>
-                </Form>
+                { this.props.isLoggedIn ? (
+                    <Form onSubmit={this.onSubmit}>
+                        <Form.Group controlId="loginFormEmail">
+                            <Form.Label>
+                                <FormattedMessage
+                                    id="dashboardSidebar.emailAddress"
+                                    defaultMessage="Email address" />
+                            </Form.Label>
+                            <Form.Control type="email" placeholder="Enter email" onChange={this.onEmailChange} />
+                        </Form.Group>
+                        <Form.Group controlId="loginFormPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" onChange={this.onPasswordChange} />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Sign in
+                        </Button>
+                        { this.state.isLoginWrongCredentialsError && (
+                            <p>Wrong credentials</p>
+                        )}
+                        { this.props.isLoggedIn && (
+                            <p>Successfully logged in</p>
+                        )}
+                    </Form>
+                ) : (
+                    <Button onClick={this.signOut}>Sign out</Button>
+                )}
             </div>
         );
     }
 }
+
+const DashboardSidebar = connect(
+    mapStateToProps
+)(ConnectedDashboardSidebar);
+export { DashboardSidebar }

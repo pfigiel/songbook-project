@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using songbook_project_service.Data;
 using songbook_project_service.Entities;
 using songbook_project_service.Utils;
 using System;
@@ -21,19 +22,22 @@ namespace songbook_project_service.Services
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly IMailerService mailer;
         private readonly IConfiguration configuration;
+        private readonly SongbookIdentityDbContext identityDbContext;
 
         public IdentityService(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager,
             IMailerService mailer,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            SongbookIdentityDbContext identityDbContext)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.signInManager = signInManager;
             this.mailer = mailer;
             this.configuration = configuration;
+            this.identityDbContext = identityDbContext;
         }
 
         public async Task<bool> RegisterAsync(User user, HttpContext context)
@@ -119,6 +123,19 @@ namespace songbook_project_service.Services
                 return true;
             }
             else
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> SignOutAsync(string token)
+        {
+            try
+            {
+                await identityDbContext.BlacklistTokens.AddAsync(new BlacklistToken() { Token = token });
+                return true;
+            }
+            catch (Exception ex)
             {
                 return false;
             }

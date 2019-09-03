@@ -13,5 +13,6 @@ namespace songbook_project_service.Services
         Task<bool> RegisterAsync(User user, HttpContext context);
         Task<User> AuthenticateAsync(User user);
         Task<bool> ActivateAsync(string activationCode);
+        Task<bool> SignOutAsync(string token);
     }
 }

@@ -1,6 +1,11 @@
 {
     "common.goToDashboard": "Go to Dashboard",
     "dashboard.view": "View",
+    "dashboardSidebar.emailAddress": "Email address",
+    "dashboardSidebar.password": "Password",
+    "dashboardSidebar.signIn": "Sign in",
+    "dashboardSidebar.signOut": "Sign out",
+    "dashboardSidebar.wrongCredentials": "Incorrect email or password.",
     "navbar.brand": "Songbook Project",
     "resultMessage.wrongEmailOrPassword": "Provoded email address and/or password is incorrect. Please try again.",
     "resultMessage.serverError": "The site is experiencing technical issues. Please try again later.",
