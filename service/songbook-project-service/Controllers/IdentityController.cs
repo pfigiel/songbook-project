@@ -84,5 +84,13 @@ namespace songbook_project_service.Controllers
                 return Unauthorized();
             }
         }
+
+        [HttpPost]
+        [Authorize]
+        [Route("validateToken")]
+        public IActionResult ValidateToken()
+        {
+            return Ok();
+        }
     }
 }

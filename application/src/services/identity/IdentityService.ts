@@ -2,10 +2,26 @@ import { login } from "../../store/actions/login";
 import { store } from "../../store/index";
 import { IApiUser } from "../../models/IApiUser";
 import { AuthenticateResult } from "./AuthenticateResult";
-import { OK, Unauthorized } from "../../utils/httpStatusCodes";
+import { OK, UNAUTHORIZED } from "../../utils/httpStatusCodes";
+import { authorizedFetch } from "../../utils/authorizedFetch";
+import { ValidateTokenResult } from "./ValidateTokenResult";
+import { StorageService } from "../StorageService";
 
 export class IdentityService {
-    public async authenticate(email: string, password: string) {
+    public async validateToken() {
+        const response = await authorizedFetch("https://localhost:44340/identity/validateToken", {
+            method: "POST"
+        });
+        if (response.status === OK) {
+            return { isSuccess: true, isTokenValid: true } as ValidateTokenResult;
+        } else if (response.status === UNAUTHORIZED) {
+            return { isSuccess: true } as ValidateTokenResult;
+        } else {
+            return { isSuccess: false } as ValidateTokenResult;
+        }
+    }
+
+    public async authenticate(email: string, password: string): Promise<AuthenticateResult> {
         const response = await fetch("https://localhost:44340/identity/authenticate", {
             method: "POST",
             headers: {
@@ -18,9 +34,10 @@ export class IdentityService {
         });
         if (response.status === OK) {
             const loginData = (await response.json()) as IApiUser;
-            store.dispatch(login(loginData.token));
+            store.dispatch(login());
+            StorageService.set(StorageService.JWT_TOKEN, loginData.token);
             return { isSuccess: true } as AuthenticateResult;
-        } else if (response.status === Unauthorized) {
+        } else if (response.status === UNAUTHORIZED) {
             return { isSuccess: false, error: AuthenticateResult.WRONG_CREDENTIALS } as AuthenticateResult;
         } else {
             return { isSuccess: false, error: AuthenticateResult.SERVER_ERROR } as AuthenticateResult;

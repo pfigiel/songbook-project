@@ -3,9 +3,8 @@ import { LOGIN } from "./actionTypes";
 
 export class LoginAction implements Action {
     public readonly type: string = LOGIN;
-    public jwtToken: string = "";
 }
 
-export const login = (jwtToken: string): LoginAction => {
-    return { type: LOGIN, jwtToken }
+export const login = (): LoginAction => {
+    return { type: LOGIN }
 }

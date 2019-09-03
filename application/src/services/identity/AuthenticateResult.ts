@@ -1,6 +1,6 @@
-import { IActionResult } from "../../utils/IActionResult";
+import { ActionResult } from "../../utils/ActionResult";
 
-export class AuthenticateResult extends IActionResult {
+export class AuthenticateResult extends ActionResult {
     public jwtToken: string = "";
     
     static WRONG_CREDENTIALS: string = "wrongCredentials";

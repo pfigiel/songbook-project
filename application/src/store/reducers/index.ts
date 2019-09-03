@@ -10,7 +10,6 @@ const initialState: State = {
 const rootReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case actionTypes.LOGIN:
-            console.log("LOGGIN IN");
             return {
                 ...state,
                 isLoggedIn: true
