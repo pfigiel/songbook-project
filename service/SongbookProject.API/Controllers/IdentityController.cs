@@ -1,0 +1,125 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
+using SongbookProject.Entities;
+using SongbookProject.Entities.API;
+using SongbookProject.Services;
+
+namespace SongbookProject.Controllers
+{
+    [Route("[controller]")]
+    public class IdentityController : Controller
+    {
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IMailerService mailer;
+        private readonly IConfiguration configuration;
+        private readonly IIdentityService service;
+
+        public IdentityController(
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
+            IMailerService mailer,
+            IConfiguration configuration,
+            IIdentityService service)
+        {
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            this.signInManager = signInManager;
+            this.mailer = mailer;
+            this.configuration = configuration;
+            this.service = service;
+        }
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register([FromBody]APIUser user)
+        {
+            if (await service.RegisterAsync(user, HttpContext))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("activate/{activationCode}")]
+        public async Task<IActionResult> Activate(string activationCode)
+        {
+            if (await service.ActivateAsync(activationCode))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody]APIUser user)
+        {
+            var authenticatedUser = await service.AuthenticateAsync(user);
+            if (authenticatedUser.Token != null)
+            {
+                return Ok(user);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("validateToken")]
+        public IActionResult ValidateToken()
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("signOut")]
+        public async Task<IActionResult> SignOutAsync()
+        {
+            if (Request.Headers.TryGetValue("Authorization", out var token))
+            {
+                if (await service.SignOutAsync(token))
+                {
+                    return Ok();
+                }
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("refreshToken")]
+        public async Task<IActionResult> RefreshTokenAsync([FromBody]APIUser user)
+        {
+            var refreshResult = await service.RefreshToken(user.RefreshToken);
+            
+            if (refreshResult != null)
+            {
+                return Ok(user);
+            }
+
+            return BadRequest();
+        }
+    }
+}

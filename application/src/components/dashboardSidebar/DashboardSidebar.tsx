@@ -112,6 +112,29 @@ class ConnectedDashboardSidebar extends React.Component<IProps, IState> {
                 ) : (
                     <Button onClick={this.signOut}>Sign out</Button>
                 )}
+                <Form onSubmit={this.onSubmit}>
+                        <Form.Group controlId="loginFormEmail">
+                            <Form.Label>
+                                <FormattedMessage
+                                    id="dashboardSidebar.emailAddress"
+                                    defaultMessage="Email address" />
+                            </Form.Label>
+                            <Form.Control type="email" placeholder="Enter email" onChange={this.onEmailChange} />
+                        </Form.Group>
+                        <Form.Group controlId="loginFormPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" onChange={this.onPasswordChange} />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Sign in
+                        </Button>
+                        { this.state.isLoginWrongCredentialsError && (
+                            <p>Wrong credentials</p>
+                        )}
+                        { this.props.isLoggedIn && (
+                            <p>Successfully logged in</p>
+                        )}
+                    </Form>
             </div>
         );
     }

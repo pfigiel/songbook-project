@@ -11,7 +11,7 @@ import { ActionResult } from "../../utils/ActionResult";
 
 export class IdentityService {
     public async validateToken() {
-        const response = await authorizedFetch("https://localhost:44340/identity/validateToken", {
+        const response = await authorizedFetch("http://localhost:5000/identity/validateToken", {
             method: "POST"
         });
         if (response.status === OK) {
@@ -24,7 +24,7 @@ export class IdentityService {
     }
 
     public async authenticate(email: string, password: string): Promise<AuthenticateResult> {
-        const response = await fetch("https://localhost:44340/identity/authenticate", {
+        const response = await fetch("http://localhost:5000/identity/authenticate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -47,7 +47,7 @@ export class IdentityService {
     }
 
     public async signOut(): Promise<ActionResult> {
-        const response = await authorizedFetch("https://localhost:44340/identity/signOut", {
+        const response = await authorizedFetch("http://localhost:5000/identity/signOut", {
             method: "POST",
         });
         if (response.status === OK) {
