@@ -142,25 +142,24 @@ namespace SongbookProject.Services
         public async Task<APIUser> RefreshToken(string refreshToken)
         {
             var oldRefreshToken = _identityDbContext.RefreshTokens.Where(rt => rt.Token == refreshToken).FirstOrDefault();
+            APIUser apiUser = null;
 
-            if (oldRefreshToken != null)
+            if (oldRefreshToken != null && oldRefreshToken.Expires >= DateTime.Now)
             {
-                if (oldRefreshToken.Expires >= DateTime.Now)
-                {
-                    var user = await _userManager.FindByIdAsync(oldRefreshToken.UserId);
+                var user = await _userManager.FindByIdAsync(oldRefreshToken.UserId);
 
-                    var test = _identityDbContext.SaveChanges();
+                var newToken = await _tokenFactory.GenerateToken(user);
+                var newRefreshToken = _tokenFactory.GenerateRefreshToken(user);
 
-                    var newToken = await _tokenFactory.GenerateToken(user);
-                    var newRefreshToken = _tokenFactory.GenerateRefreshToken(user);
+                _identityDbContext.RefreshTokens.Add(newRefreshToken);
 
-                    return new APIUser() { Email = user.Email, Token = newToken.Write(), RefreshToken = newRefreshToken.Token };
-                }
-
-                _identityDbContext.RefreshTokens.Remove(oldRefreshToken);
+                apiUser = new APIUser() { Email = user.Email, Token = newToken.Write(), RefreshToken = newRefreshToken.Token };
             }
 
-            return null;
+            _identityDbContext.RefreshTokens.Remove(oldRefreshToken);
+            _identityDbContext.SaveChanges();
+
+            return apiUser;
         }
     }
 }

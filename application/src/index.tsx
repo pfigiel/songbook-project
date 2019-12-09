@@ -1,11 +1,10 @@
 import "./styles/reset.scss";
-import "bootstrap/dist/css/bootstrap.css";
 import "./styles/styles.scss";
 import React from "react";
 import ReactDOM from "react-dom";
 import { addLocaleData } from "react-intl";
 import { IntlProviderWrapper } from "./utils/IntlProviderWrapper";
-import { App } from "./components/app/App";
+import { App } from "./components/App";
 import * as serviceWorker from "./serviceWorker";
 
 addLocaleData([]);

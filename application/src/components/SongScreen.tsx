@@ -1,10 +1,8 @@
 import React from "react";
-import "./songScreen.scss";
-import { Button } from "react-bootstrap";
 import { FormattedMessage } from "react-intl";
-import { appContext } from "../../utils/AppContext";
-import { config } from "../../utils/config";
-import { ISong } from "../../models/ISong";
+import { appContext } from "../utils/AppContext";
+import { config } from "../utils/config";
+import { ISong } from "../models/ISong";
 
 interface IProps {
   location: {
@@ -103,7 +101,7 @@ export class SongScreen extends React.Component<IProps, IState> {
           {this.state.activeSongParsedText}
         </p>
         <div id="songScreenNavButtonsWrapper">
-          <Button
+          <button
             disabled={
               this.props.location.state.songs[
                 this.state.activeSongIndex - 1
@@ -115,8 +113,8 @@ export class SongScreen extends React.Component<IProps, IState> {
               id="songsScreen.previous"
               defaultMessage="Previous"
             />
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={() =>
               appContext.history.push(config.clientRoutes.dashboard)
             }
@@ -125,8 +123,8 @@ export class SongScreen extends React.Component<IProps, IState> {
               id="common.goToDashboard"
               defaultMessage="Go to Dashboard"
             />
-          </Button>
-          <Button
+          </button>
+          <button
             disabled={
               this.props.location.state.songs[
                 this.state.activeSongIndex + 1
@@ -135,7 +133,7 @@ export class SongScreen extends React.Component<IProps, IState> {
             onClick={this.switchToNextSong}
           >
             <FormattedMessage id="songsScreen.next" defaultMessage="Next" />
-          </Button>
+          </button>
         </div>
       </div>
     );

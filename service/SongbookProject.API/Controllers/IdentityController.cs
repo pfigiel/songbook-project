@@ -95,11 +95,11 @@ namespace SongbookProject.Controllers
         [HttpPost]
         [Authorize]
         [Route("signOut")]
-        public async Task<IActionResult> SignOutAsync()
+        public async Task<IActionResult> SignOutAsync([FromBody]APIUser user)
         {
             if (Request.Headers.TryGetValue("Authorization", out var token))
             {
-                if (await service.SignOutAsync(token))
+                if (await service.SignOutAsync(user.RefreshToken))
                 {
                     return Ok();
                 }
@@ -116,7 +116,7 @@ namespace SongbookProject.Controllers
             
             if (refreshResult != null)
             {
-                return Ok(user);
+                return Ok(refreshResult);
             }
 
             return BadRequest();

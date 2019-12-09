@@ -49,6 +49,9 @@ export class IdentityService {
     public async signOut(): Promise<ActionResult> {
         const response = await authorizedFetch("http://localhost:5000/identity/signOut", {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
         });
         if (response.status === OK) {
             store.dispatch(signOut());

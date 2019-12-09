@@ -1,12 +1,12 @@
 import React from "react";
 import { Router, Route } from "react-router-dom";
-import { appContext } from "../../utils/AppContext";
-import { config } from "../../utils/config";
-import { Home } from "../home/Home";
-import { Dashboard } from "../dashboard/Dashboard";
-import { SongScreen } from "../songScreen/SongScreen";
+import { appContext } from "../utils/AppContext";
+import { config } from "../utils/config";
+import { Home } from "./Home";
+import { Dashboard } from "./Dashboard";
+import { SongScreen } from "./SongScreen";
 import { Provider } from "react-redux";
-import { store } from "../../store/index";
+import { store } from "../store/index";
 
 export class App extends React.Component {
   render() {

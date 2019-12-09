@@ -1,10 +1,8 @@
 import React from "react";
-import "./songsList.scss";
-import { appContext } from "../../utils/AppContext";
-import { ISong } from "../../models/ISong";
-import { Button, Spinner, Table } from "react-bootstrap";
+import { appContext } from "../utils/AppContext";
+import { ISong } from "../models/ISong";
 import { FormattedMessage } from "react-intl";
-import { config } from "../../utils/config";
+import { config } from "../utils/config";
 
 interface IState {
   songs: Array<ISong>;
@@ -36,7 +34,7 @@ export class SongsList extends React.Component<{}, IState> {
         <th>{song.title}</th>
         <th>{song.artist}</th>
         <th>
-        <Button
+        <button
           onClick={() =>
             appContext.history.push(config.clientRoutes.song, {
               songs: this.state.songs,
@@ -45,7 +43,7 @@ export class SongsList extends React.Component<{}, IState> {
           }
         >
           <FormattedMessage id="dashboard.view" defaultMessage="View" />
-        </Button>
+        </button>
         </th>
       </tr>
     );
@@ -55,10 +53,13 @@ export class SongsList extends React.Component<{}, IState> {
     return (
       <div id="songsListWrapper">
         {this.state.isLoading ? (
-          <Spinner animation="border" />
+          <div>
+            {/*TODO: add spinner*/}
+            Loading
+          </div>
         ) : (
           <div id="songsListContent">
-            <Table hover>
+            <table>
                 <thead>
                     <tr>
                         <th>
@@ -77,7 +78,7 @@ export class SongsList extends React.Component<{}, IState> {
                 this.generateSongRow(song, index)
               )}
               </tbody>
-            </Table>
+            </table>
           </div>
         )}
       </div>
