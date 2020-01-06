@@ -18,12 +18,12 @@ namespace SongbookProject.Controllers
     [Route("[controller]")]
     public class IdentityController : Controller
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly IMailerService mailer;
-        private readonly IConfiguration configuration;
-        private readonly IIdentityService service;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMailerService _mailer;
+        private readonly IConfiguration _configuration;
+        private readonly IIdentityService _service;
 
         public IdentityController(
             UserManager<IdentityUser> userManager,
@@ -33,19 +33,19 @@ namespace SongbookProject.Controllers
             IConfiguration configuration,
             IIdentityService service)
         {
-            this.userManager = userManager;
-            this.roleManager = roleManager;
-            this.signInManager = signInManager;
-            this.mailer = mailer;
-            this.configuration = configuration;
-            this.service = service;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _signInManager = signInManager;
+            _mailer = mailer;
+            _configuration = configuration;
+            _service = service;
         }
 
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody]APIUser user)
         {
-            if (await service.RegisterAsync(user, HttpContext))
+            if (await _service.RegisterAsync(user, HttpContext))
             {
                 return Ok();
             }
@@ -59,7 +59,7 @@ namespace SongbookProject.Controllers
         [Route("activate/{activationCode}")]
         public async Task<IActionResult> Activate(string activationCode)
         {
-            if (await service.ActivateAsync(activationCode))
+            if (await _service.ActivateAsync(activationCode))
             {
                 return Ok();
             }
@@ -73,7 +73,7 @@ namespace SongbookProject.Controllers
         [Route("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]APIUser user)
         {
-            var authenticatedUser = await service.AuthenticateAsync(user);
+            var authenticatedUser = await _service.AuthenticateAsync(user);
             if (authenticatedUser.Token != null)
             {
                 return Ok(user);
@@ -87,9 +87,11 @@ namespace SongbookProject.Controllers
         [HttpPost]
         [Authorize]
         [Route("validateToken")]
-        public IActionResult ValidateToken()
+        public async Task<IActionResult> ValidateToken()
         {
-            return Ok();
+            var user = await _userManager.FindByIdAsync(User.Identity.Name);
+            var roles = await _userManager.GetRolesAsync(user);
+            return Ok(new APIUser() { Email = user.Email, Roles = roles });
         }
 
         [HttpPost]
@@ -99,7 +101,7 @@ namespace SongbookProject.Controllers
         {
             if (Request.Headers.TryGetValue("Authorization", out var token))
             {
-                if (await service.SignOutAsync(user.RefreshToken))
+                if (await _service.SignOutAsync(user.RefreshToken))
                 {
                     return Ok();
                 }
@@ -112,7 +114,7 @@ namespace SongbookProject.Controllers
         [Route("refreshToken")]
         public async Task<IActionResult> RefreshTokenAsync([FromBody]APIUser user)
         {
-            var refreshResult = await service.RefreshToken(user.RefreshToken);
+            var refreshResult = await _service.RefreshToken(user.RefreshToken);
             
             if (refreshResult != null)
             {

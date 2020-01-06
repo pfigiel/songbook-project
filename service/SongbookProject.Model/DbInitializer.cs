@@ -50,67 +50,67 @@ namespace SongbookProject.Data
         private void Initialize()
         {
             // Some of the collections are empty, some are not - unexpected situation, clear collections
-            if (context.Songs.Any() ^ context.TextAssets.Any())
-            {
-                foreach (var songMetadata in context.Songs)
-                {
-                    context.Songs.Remove(songMetadata);
-                }
-                foreach (var textAsset in context.TextAssets)
-                {
-                    context.TextAssets.Remove(textAsset);
-                }
-                context.SaveChanges();
-            }
+            //if (context.Songs.Any() ^ context.TextAssets.Any())
+            //{
+            //    foreach (var songMetadata in context.Songs)
+            //    {
+            //        context.Songs.Remove(songMetadata);
+            //    }
+            //    foreach (var textAsset in context.TextAssets)
+            //    {
+            //        context.TextAssets.Remove(textAsset);
+            //    }
+            //    context.SaveChanges();
+            //}
 
             // All collections are empty - populate
             if (!context.Songs.Any() && !context.TextAssets.Any())
             {
-                var textAssets = new TextAsset[]
-                {
-                    new TextAsset() { TextPl = "Piosenka 1" },
-                    new TextAsset() { TextEn = "Song 2", TextPl = "Piosenka 2" },
-                    new TextAsset() { TextEn = "Song 3" },
-                    new TextAsset() { TextEn = "Song 1 Text", TextPl = "Piosenka 1 Tekst" },
-                    new TextAsset() { TextEn = "Song 2 Text", TextPl = "Piosenka 2 Tekst" },
-                    new TextAsset() { TextEn = "Song 3 Text", TextPl = "Piosenka 3 Tekst" },
-                    new TextAsset() { TextEn = "Song 2 Arrangement" },
-                    new TextAsset() { TextPl = "Aranżacja Piosenki 1" },
-                };
-                foreach (var textAsset in textAssets)
-                {
-                    context.TextAssets.Add(textAsset);
-                }
-                context.SaveChanges();
+                //var textAssets = new TextAsset[]
+                //{
+                //    new TextAsset() { TextPl = "Piosenka 1" },
+                //    new TextAsset() { TextEn = "Song 2", TextPl = "Piosenka 2" },
+                //    new TextAsset() { TextEn = "Song 3" },
+                //    new TextAsset() { TextEn = "Song 1 Text", TextPl = "Piosenka 1 Tekst" },
+                //    new TextAsset() { TextEn = "Song 2 Text", TextPl = "Piosenka 2 Tekst" },
+                //    new TextAsset() { TextEn = "Song 3 Text", TextPl = "Piosenka 3 Tekst" },
+                //    new TextAsset() { TextEn = "Song 2 Arrangement" },
+                //    new TextAsset() { TextPl = "Aranżacja Piosenki 1" },
+                //};
+                //foreach (var textAsset in textAssets)
+                //{
+                //    context.TextAssets.Add(textAsset);
+                //}
+                //context.SaveChanges();
 
-                var songMetadatas = new Song[]
-                {
-                    new Song()
-                    {
-                        Artist = "Unknown",
-                        Title = textAssets[0],
-                        Text = textAssets[3],
-                        Arrangement = textAssets[7]
-                    },
-                    new Song()
-                    {
-                        Artist = "Unknown",
-                        Title = textAssets[1],
-                        Text = textAssets[4],
-                        Arrangement = textAssets[6]
-                    },
-                    new Song()
-                    {
-                        Artist = "Unknown",
-                        Title = textAssets[2],
-                        Text = textAssets[5]
-                    }
-                };
-                foreach (var songMetadata in songMetadatas)
-                {
-                    context.Songs.Add(songMetadata);
-                }
-                context.SaveChanges();
+                //var songMetadatas = new Song[]
+                //{
+                //    new Song()
+                //    {
+                //        Artist = "Unknown",
+                //        Title = textAssets[0],
+                //        Text = textAssets[3],
+                //        Arrangement = textAssets[7]
+                //    },
+                //    new Song()
+                //    {
+                //        Artist = "Unknown",
+                //        Title = textAssets[1],
+                //        Text = textAssets[4],
+                //        Arrangement = textAssets[6]
+                //    },
+                //    new Song()
+                //    {
+                //        Artist = "Unknown",
+                //        Title = textAssets[2],
+                //        Text = textAssets[5]
+                //    }
+                //};
+                //foreach (var songMetadata in songMetadatas)
+                //{
+                //    context.Songs.Add(songMetadata);
+                //}
+                //context.SaveChanges();
             }
         }
 

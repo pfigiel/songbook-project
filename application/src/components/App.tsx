@@ -7,6 +7,9 @@ import { Dashboard } from "./Dashboard";
 import { SongScreen } from "./SongScreen";
 import { Provider } from "react-redux";
 import { store } from "../store/index";
+import { SignInScreen } from "./SignInScreen";
+import { RegisterScreen } from "./RegisterScreen";
+import { SongEditScreen } from "./SongEditScreen";
 
 export class App extends React.Component {
   render() {
@@ -20,6 +23,9 @@ export class App extends React.Component {
             component={Dashboard}
           />
           <Route exact path={config.clientRoutes.song} component={SongScreen} />
+          <Route exact path={config.clientRoutes.signIn} component={SignInScreen} />
+          <Route exact path={config.clientRoutes.register} component={RegisterScreen} />
+          <Route exact path={config.clientRoutes.editSong} component={SongEditScreen} />
         </Router>
       </Provider>
     );

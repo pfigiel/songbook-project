@@ -1,16 +1,33 @@
 import React from "react";
 import { Header } from "./Header";
-import { DashboardSidebar } from "./DashboardSidebar";
 import { SongsList } from "./SongsList";
+import { IdentityService } from "../services/identity/IdentityService";
+import { StorageService } from "../services/StorageService";
+
+interface IProps {
+  isLoggedIn: boolean;
+}
 
 export class Dashboard extends React.Component {
+  identityService: IdentityService;
+
+  constructor(props: IProps) {
+    super(props);
+    this.identityService = new IdentityService();
+  }
+
+  async componentDidMount() {
+    if (StorageService.get(StorageService.JWT_TOKEN) !== null && StorageService.get(StorageService.REFRESH_TOKEN) !== null) {
+      await this.identityService.validateToken();
+    }
+  }
+
   render() {
     return (
       <div>
         <Header />
         <div id="dashboardWrapper">
           <SongsList />
-          <DashboardSidebar />
         </div>
       </div>
       

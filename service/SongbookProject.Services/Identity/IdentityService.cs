@@ -70,7 +70,7 @@ namespace SongbookProject.Services
                 if (defaultRoleExists || roleCreateSucceeded)
                 {
                     await _userManager.AddToRoleAsync(identityUser, RoleNames.Default);
-                    var activationMessageSuccess = _mailer.SendAccountActivationMessage(user.Email, $"{context.Request.Scheme}://{context.Request.Host}/activate/{identityUser.Id}");
+                    var activationMessageSuccess = _mailer.SendAccountActivationMessage(user.Email, $"{context.Request.Scheme}://{context.Request.Host}/identity/activate/{identityUser.Id}");
                     if (activationMessageSuccess)
                     {
                         return true;
@@ -100,6 +100,8 @@ namespace SongbookProject.Services
 
                 user.Token = token.Write();
                 user.RefreshToken = refreshToken.Token;
+
+                user.Roles = await _userManager.GetRolesAsync(identityUser);
 
                 _identityDbContext.RefreshTokens.Add(refreshToken);
                 _identityDbContext.Users.Update(identityUser);
@@ -153,7 +155,7 @@ namespace SongbookProject.Services
 
                 _identityDbContext.RefreshTokens.Add(newRefreshToken);
 
-                apiUser = new APIUser() { Email = user.Email, Token = newToken.Write(), RefreshToken = newRefreshToken.Token };
+                apiUser = new APIUser() { Email = user.Email, Token = newToken.Write(), RefreshToken = newRefreshToken.Token, Roles = await _userManager.GetRolesAsync(user) };
             }
 
             _identityDbContext.RefreshTokens.Remove(oldRefreshToken);

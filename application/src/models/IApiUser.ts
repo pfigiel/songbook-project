@@ -3,4 +3,5 @@ export interface IApiUser {
     password: string;
     token: string;
     refreshToken: string;
+    roles: Array<string>;
 }

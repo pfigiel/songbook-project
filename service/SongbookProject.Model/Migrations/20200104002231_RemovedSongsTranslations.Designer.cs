@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SongbookProject.Data;
 
 namespace SongbookProject.Model.Migrations
 {
     [DbContext(typeof(SongbookDbContext))]
-    partial class SongbookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200104002231_RemovedSongsTranslations")]
+    partial class RemovedSongsTranslations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,9 +33,6 @@ namespace SongbookProject.Model.Migrations
 
                     b.Property<string>("Artist")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("LanguageId")
                         .HasColumnType("int");

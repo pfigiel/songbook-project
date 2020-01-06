@@ -76,6 +76,7 @@ namespace songbook_project_api
             services.Configure<InitialAdminCredentials>(Configuration.GetSection("InitialAdminCredentials"));
             services.AddTransient<IMailerService, MailerService>();
             services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<ISongsService, SongsService>();
             services.AddTransient<IDbInitializer, DbInitializer>();
             services.AddLogging();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);

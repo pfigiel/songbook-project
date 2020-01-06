@@ -10,6 +10,8 @@ import { cookieNames } from "./cookieNames";
 
 addLocaleData([...en, ...pl]);
 
+export const AvailableLanguages = ["en", "pl"];
+
 const CurrentLanguage = () => {
   let lang = appContext.cookies.get(cookieNames.language) || navigator.language.split(/[-_]/)[0];
   return lang === languageNames.pl ? languageNames.pl : languageNames.en;

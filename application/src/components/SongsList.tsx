@@ -3,6 +3,10 @@ import { appContext } from "../utils/AppContext";
 import { ISong } from "../models/ISong";
 import { FormattedMessage } from "react-intl";
 import { config } from "../utils/config";
+import { StorageService } from "../services/StorageService";
+import { Roles } from "../services/identity/Roles";
+import { SongsService } from "../services/SongsService";
+import { EditMode, LocationState } from "./SongEditScreen";
 
 interface IState {
   songs: Array<ISong>;
@@ -10,12 +14,16 @@ interface IState {
 }
 
 export class SongsList extends React.Component<{}, IState> {
+  state = {
+    songs: [],
+    isLoading: false
+  };
+
+  songsService: SongsService;
+
   constructor(props: {}, state: IState) {
     super(props, state);
-    this.state = {
-      songs: [],
-      isLoading: false
-    };
+    this.songsService = new SongsService();
   }
 
   async componentDidMount() {
@@ -32,21 +40,46 @@ export class SongsList extends React.Component<{}, IState> {
     return (
       <tr key={index}>
         <th>{song.title}</th>
+        <th>{song.originalTitle}</th>
         <th>{song.artist}</th>
+        <th>{song.arrangement}</th>
         <th>
-        <button
-          onClick={() =>
-            appContext.history.push(config.clientRoutes.song, {
-              songs: this.state.songs,
-              startSongIndex: index
-            })
-          }
-        >
-          <FormattedMessage id="dashboard.view" defaultMessage="View" />
-        </button>
+          <button onClick={() => this.onViewSongButtonClick(index)}>
+            <FormattedMessage id="dashboard.view" defaultMessage="View" />
+          </button>
+          <button onClick={() => this.onModifySongButtonClick(song)}>
+            <FormattedMessage id="dashboard.modify" defaultMessage="Modify" />
+          </button>
+          <button onClick={() => this.onDeleteSongButtonClick(song)}>
+            <FormattedMessage id="dashboard.delete" defaultMessage="Delete" />
+          </button>
         </th>
       </tr>
     );
+  }
+
+  onViewSongButtonClick = (index: number) => {
+    appContext.history.push(config.clientRoutes.song, {
+      songs: this.state.songs,
+      startSongIndex: index
+    });
+  }
+
+  onModifySongButtonClick = (song: ISong) => {
+    appContext.history.push(config.clientRoutes.editSong, { mode: EditMode.MODIFY, song } as LocationState);
+  }
+
+  onDeleteSongButtonClick = async (song: ISong) => {
+    const deleteResult = await this.songsService.deleteSong(song.id);
+    if (deleteResult.isSuccess) {
+      const songs: ISong[] = this.state.songs;
+      songs.splice(songs.indexOf(song), 1);
+      this.setState({ songs });
+    }
+  }
+
+  onAddSongButtonClick = () => {
+    appContext.history.push(config.clientRoutes.editSong, { mode: EditMode.ADD } as LocationState);
   }
 
   render() {
@@ -55,32 +88,44 @@ export class SongsList extends React.Component<{}, IState> {
         {this.state.isLoading ? (
           <div>
             {/*TODO: add spinner*/}
-            Loading
+            <FormattedMessage id="common.loading"
+              defaultMessage="Loading" />
           </div>
         ) : (
-          <div id="songsListContent">
-            <table>
+            <div id="songsListContent">
+              <table>
                 <thead>
-                    <tr>
-                        <th>
-                            <FormattedMessage id="songsList.title" defaultMessage = "Title" />
-                        </th>
-                        <th>
-                            <FormattedMessage id="songsList.artist" defaultMessage = "Artist" />
-                            </th>
-                            <th>
-                                <FormattedMessage id="songsList.actions" defaultMessage = "Actions" />
-                            </th>
-                    </tr>
+                  <tr>
+                    <th>
+                      <FormattedMessage id="songsList.title" defaultMessage="Title" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="songsList.originalTitle" defaultMessage="Original title" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="songsList.artist" defaultMessage="Artist" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="songsList.arrangement" defaultMessage="Arrangement" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="songsList.actions" defaultMessage="Actions" />
+                    </th>
+                  </tr>
                 </thead>
                 <tbody>
-              {this.state.songs.map((song, index) =>
-                this.generateSongRow(song, index)
+                  {this.state.songs.map((song, index) =>
+                    this.generateSongRow(song, index)
+                  )}
+                </tbody>
+              </table>
+              {StorageService.get(StorageService.ROLES) && StorageService.get(StorageService.ROLES).includes(Roles.ADMIN) && (
+                <button onClick={this.onAddSongButtonClick}>
+                  <FormattedMessage id="songsList.addSong" defaultMessage="Add song" />
+                </button>
               )}
-              </tbody>
-            </table>
-          </div>
-        )}
+            </div>
+          )}
       </div>
     );
   }

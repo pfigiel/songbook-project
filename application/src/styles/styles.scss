@@ -2,14 +2,210 @@
 
 @import "./reset.scss";
 @import "./overrides.scss";
+@import "./variables.scss";
 
-@import "./dashboard.scss";
-@import "./dashboardSidebar.scss";
+#header {
+    height: $headerHeight;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+
+    #brandName {
+        color: white;
+        text-decoration: none;
+    }
+
+    a {
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+
+    > div:last-child {
+        min-width: 300px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        > div:first-child > * {
+            margin-right: 20px;
+            color: white;
+            font-size: 16px;
+        }
+    }
+}
+
+#homeContent {
+    min-height: calc(100vh - #{$headerHeight} - #{$footerHeight});
+
+    > div {
+        height: 400px;
+    }
+
+    #goToDashboardSection
+    {
+        padding: 60px 20px 0 20px;
+        background-color: $lightBlueColor;
+        text-align: center;
+
+        > span {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        > button {
+            width: 200px;
+            margin-left: calc(50% - 100px);
+        }
+
+        > * {
+            display: block;
+        }
+    }
+
+    #testSection2
+    {
+        padding: 20px;
+        background-color: $lightBlueColor;
+
+        > span:first-child {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        > span:nth-child(2) {
+            width: 50%;
+        }
+
+        > * {
+            display: block;
+        }
+    }
+
+    #testSection1,
+    #testSection3 {
+        padding: 20px 20px 20px calc(50% - 40px);
+        background-color: white;
+
+        > span:first-child {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        > * {
+            display: block;
+        }
+    }
+}
+
+#signInScreen {
+    padding: 20px;
+}
+
+#registerScreen, #signInScreen {
+    padding: 20px;
+
+    form {
+        text-align: center;
+
+        label, input {
+            width: 100%;
+        }
+
+        input {
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 200px;
+            margin-left: calc(50% - 100px);
+        }
+
+        > * {
+            display: block;
+        }
+    }
+}
+
+#dashboardWrapper {
+    padding: 20px;
+    height: calc(100vh - #{$headerHeight} - 40px);
+
+    #songsListWrapper {
+        #songsListContent {
+            table {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            table tr th {
+                border: 1px solid $darkColor;
+            }
+
+            thead > tr {
+                background-color: #CCC;
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            thead {
+                font-weight: bold;
+            }
+
+            th {
+                padding: 10px 20px;               
+            }
+
+            > button {
+                width: 200px;
+                margin-left: calc(50% - 100px);
+            }
+        }
+    }
+}
+
+#songEditScreen {
+    padding: 20px;
+
+    form {
+        button {
+            width: 200px;
+            margin-left: calc(50% - 100px);
+        }
+
+        input, textarea {
+            margin-bottom: 20px;
+        }
+
+        > * {
+            display: block;
+            text-align: center;
+
+            &:not(button) {
+                width: 100%;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
 @import "./header.scss";
-@import "./home.scss";
 @import "./homeHeader.scss";
 @import "./languageSwitch.scss";
 @import "./songScreen.scss";
 @import "./songsList.scss";
-
-@import "./container-overrides.scss";

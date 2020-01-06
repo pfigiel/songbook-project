@@ -110,7 +110,7 @@ export class SongScreen extends React.Component<IProps, IState> {
             onClick={this.switchToPrevSong}
           >
             <FormattedMessage
-              id="songsScreen.previous"
+              id="songScreen.previous"
               defaultMessage="Previous"
             />
           </button>
@@ -132,7 +132,7 @@ export class SongScreen extends React.Component<IProps, IState> {
             }
             onClick={this.switchToNextSong}
           >
-            <FormattedMessage id="songsScreen.next" defaultMessage="Next" />
+            <FormattedMessage id="songScreen.next" defaultMessage="Next" />
           </button>
         </div>
       </div>
