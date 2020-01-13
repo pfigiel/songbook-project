@@ -2,11 +2,21 @@ import React from "react";
 import { Header } from "./Header";
 import { SongsList } from "./SongsList";
 import { IdentityService } from "../services/identity/IdentityService";
-import { StorageService } from "../services/StorageService";
+import { connect } from "react-redux";
+import { State } from "../store/models/State";
 
 interface IProps {
   isLoggedIn: boolean;
 }
+
+const mapStateToProps = (state: State) => {
+  return {
+    isLoading: false,
+    user: state.user
+  };
+};
+
+const headerHOC = connect(mapStateToProps)(Header);
 
 export class Dashboard extends React.Component {
   identityService: IdentityService;
@@ -17,15 +27,13 @@ export class Dashboard extends React.Component {
   }
 
   async componentDidMount() {
-    if (StorageService.get(StorageService.JWT_TOKEN) !== null && StorageService.get(StorageService.REFRESH_TOKEN) !== null) {
-      await this.identityService.validateToken();
-    }
+    await this.identityService.validateToken();
   }
 
   render() {
     return (
       <div>
-        <Header />
+        {headerHOC}
         <div id="dashboardWrapper">
           <SongsList />
         </div>

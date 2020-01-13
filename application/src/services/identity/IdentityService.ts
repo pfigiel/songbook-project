@@ -11,21 +11,25 @@ import { ActionResult } from "../../utils/ActionResult";
 import { config } from "../../utils/config";
 
 export class IdentityService {
+    private isClientLoggedIn() {
+        const jwtToken = StorageService.get(StorageService.JWT_TOKEN);
+        const refreshToken = StorageService.get(StorageService.REFRESH_TOKEN);
+        return jwtToken !== null || refreshToken !== null;
+    }
+
     public async validateToken() {
-        const response = await authorizedFetch(config.api.routes.validateToken, {
-            method: "POST"
-        });
-        if (response.status === OK) {
-            const responseBody = (await response.json()) as IApiUser;
-            StorageService.set(StorageService.EMAIL, responseBody.email);
-            store.dispatch(login());
-            return { isSuccess: true, isTokenValid: true } as ValidateTokenResult;
-        } else if (response.status === UNAUTHORIZED) {
-            return await this.refreshToken();
+        if (this.isClientLoggedIn()){
+            const response = await authorizedFetch(config.api.routes.validateToken, {
+                method: "POST"
+            });
+
+            if (response.status === OK) {
+                const responseBody = (await response.json()) as IApiUser;
+                store.dispatch(login(responseBody.email, responseBody.roles, StorageService.get(StorageService.JWT_TOKEN), StorageService.get(StorageService.REFRESH_TOKEN)));
+                return { isSuccess: true } as ValidateTokenResult;
+            }
         }
         
-        StorageService.remove(StorageService.JWT_TOKEN);
-        StorageService.remove(StorageService.REFRESH_TOKEN);
         return { isSuccess: false } as ValidateTokenResult;
     }
 
@@ -41,11 +45,14 @@ export class IdentityService {
         });
         if (refreshResponse.status === OK) {
             const refreshResponseBody = (await refreshResponse.json()) as IApiUser;
+
+            store.dispatch(login(refreshResponseBody.email, refreshResponseBody.roles, refreshResponseBody.token, refreshResponseBody.refreshToken));
+
             StorageService.set(StorageService.JWT_TOKEN, refreshResponseBody.token);
             StorageService.set(StorageService.REFRESH_TOKEN, refreshResponseBody.refreshToken);
             StorageService.set(StorageService.EMAIL, refreshResponseBody.email);
             StorageService.set(StorageService.ROLES, refreshResponseBody.roles);
-            store.dispatch(login());
+            
             return { isSuccess: true } as ValidateTokenResult;
         }
     }
@@ -65,7 +72,7 @@ export class IdentityService {
         if (response.status === OK) {
             const loginData = (await response.json()) as IApiUser;
 
-            store.dispatch(login());
+            store.dispatch(login(loginData.email, loginData.roles, loginData.token, loginData.refreshToken));
 
             StorageService.set(StorageService.JWT_TOKEN, loginData.token);
             StorageService.set(StorageService.REFRESH_TOKEN, loginData.refreshToken);
@@ -88,17 +95,18 @@ export class IdentityService {
             },
             body: JSON.stringify({ RefreshToken: StorageService.get(StorageService.REFRESH_TOKEN) })
         });
+
+        this.signOutClient();
         
-        if (response.status === OK) {
-            store.dispatch(signOut());
-            StorageService.set(StorageService.JWT_TOKEN, undefined);
-            StorageService.set(StorageService.REFRESH_TOKEN, undefined);
-            StorageService.set(StorageService.EMAIL, undefined);
-            StorageService.set(StorageService.ROLES, undefined);
-            return { isSuccess: true } as ActionResult;
-        } else {
-            return { isSuccess: false } as ActionResult;
-        }
+        return { isSuccess: response.status === OK } as ActionResult;
+    }
+
+    public async signOutClient() {
+        store.dispatch(signOut());
+        StorageService.remove(StorageService.JWT_TOKEN);
+        StorageService.remove(StorageService.REFRESH_TOKEN);
+        StorageService.remove(StorageService.EMAIL);
+        StorageService.remove(StorageService.ROLES);
     }
 
     public async register(email: string, password: string): Promise<ActionResult> {

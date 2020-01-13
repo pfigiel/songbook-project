@@ -5,7 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SongbookProject.Entities;
+using SongbookProject.Model.Entities;
 using SongbookProject.Utils;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -49,6 +51,11 @@ namespace SongbookProject.Data
 
         private void Initialize()
         {
+            if (!context.Languages.Any())
+            {
+                context.Languages.AddRange(new List<Language>() { new Language() { Code = "pl" }, new Language() { Code = "en" } });
+                context.SaveChanges();
+            }
             // Some of the collections are empty, some are not - unexpected situation, clear collections
             //if (context.Songs.Any() ^ context.TextAssets.Any())
             //{

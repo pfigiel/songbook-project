@@ -7,27 +7,39 @@ import { StorageService } from "../services/StorageService";
 import { Roles } from "../services/identity/Roles";
 import { SongsService } from "../services/SongsService";
 import { EditMode, LocationState } from "./SongEditScreen";
+import { User, State } from "../store/models/State";
+import { connect } from "react-redux";
+
+interface IProps {
+  user: User;
+}
 
 interface IState {
   songs: Array<ISong>;
   isLoading: boolean;
 }
 
-export class SongsList extends React.Component<{}, IState> {
-  state = {
-    songs: [],
-    isLoading: false
+const mapStateToProps = (state: State) => {
+  return {
+    user: state.user
   };
+};
 
+class UnconnectedSongsList extends React.Component<IProps, IState> {
+  state: IState = {
+    isLoading:
+    false, songs: []
+  };
+  
   songsService: SongsService;
 
-  constructor(props: {}, state: IState) {
+  constructor(props: IProps, state: IState) {
     super(props, state);
     this.songsService = new SongsService();
   }
 
   async componentDidMount() {
-    await this.fetchSongs();
+    this.fetchSongs();
   }
 
   async fetchSongs() {
@@ -119,7 +131,7 @@ export class SongsList extends React.Component<{}, IState> {
                   )}
                 </tbody>
               </table>
-              {StorageService.get(StorageService.ROLES) && StorageService.get(StorageService.ROLES).includes(Roles.ADMIN) && (
+              {this.props.user.roles.includes(Roles.ADMIN) && (
                 <button onClick={this.onAddSongButtonClick}>
                   <FormattedMessage id="songsList.addSong" defaultMessage="Add song" />
                 </button>
@@ -130,3 +142,6 @@ export class SongsList extends React.Component<{}, IState> {
     );
   }
 }
+
+const SongsList = connect(mapStateToProps)(UnconnectedSongsList);
+export { SongsList };

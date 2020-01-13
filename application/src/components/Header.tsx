@@ -1,32 +1,38 @@
 import React from "react";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { FormattedMessage } from "react-intl";
-import { State } from "../store/models/State";
+import { State, User } from "../store/models/State";
 import { connect } from "react-redux";
-import { StorageService } from "../services/StorageService";
 import { config } from "../utils/config";
 import { IdentityService } from "../services/identity/IdentityService";
 
 interface IProps {
-  isLoggedIn: boolean;
+  isLoading: boolean;
+  user: User
 }
 
 const mapStateToProps = (state: State) => {
   return {
-    isLoggedIn: state.isLoggedIn
+    isLoading: false,
+    user: state.user
   };
 };
 
-class UnconnectedHeader extends React.Component<IProps> {
+export class Header extends React.Component<IProps> {
   identityService: IdentityService;
 
   constructor(props: IProps) {
     super(props);
+    console.log("ASDF");
     this.identityService = new IdentityService();
   }
 
   onSignOutButtonClick = async () => {
     const signOutResult = await this.identityService.signOut();
+  }
+
+  componentWillUnmount() {
+    console.log("UN");
   }
 
   render() {
@@ -41,7 +47,7 @@ class UnconnectedHeader extends React.Component<IProps> {
           </div>
         </a>
         <div>
-          {!this.props.isLoggedIn ? (
+          {!this.props.user.isLoggedIn ? (
             <div>
               <a href={config.clientRoutes.signIn}>
                 <FormattedMessage id="identity.signIn" defaultMessage="Sign in" />
@@ -52,7 +58,7 @@ class UnconnectedHeader extends React.Component<IProps> {
             </div>
           ) : (
               <div>
-                <span>{StorageService.get(StorageService.EMAIL)}</span>
+                <span>{this.props.user.email}</span>
                 <a onClick={this.onSignOutButtonClick}>
                   <FormattedMessage id="identity.signOut" defaultMessage="Sign out" />
                 </a>
@@ -65,5 +71,5 @@ class UnconnectedHeader extends React.Component<IProps> {
   }
 }
 
-const Header = connect(mapStateToProps)(UnconnectedHeader);
-export { Header };
+// const Header = connect(mapStateToProps)(UnconnectedHeader);
+// export { Header };
