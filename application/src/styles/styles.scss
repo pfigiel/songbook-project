@@ -217,22 +217,23 @@
         font-size: 30px;
     }
     
-    span.chord {
+    span.chordOverText {
         position: absolute;
         margin: -1rem 0 0 -0.5rem;
     }
+
+    span.chordNextToText {
+        padding: 0 5px;
+    }
     
     p.textLine {
-        padding-bottom: 30px;
+        padding-bottom: 10px;
+
+        &.chordsOverText {
+            padding-bottom: 30px;
+        }
     }
 }
-
-
-
-
-
-
-
 
 @import "./header.scss";
 @import "./homeHeader.scss";

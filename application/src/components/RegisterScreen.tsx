@@ -52,7 +52,7 @@ export class RegisterScreen extends React.Component<IProps> {
     render() {
         return (
             <>
-                {/* <Header /> */}
+                <Header />
                 <div id="registerScreen">
                     <form onSubmit={this.onSubmit}>
                         <label>

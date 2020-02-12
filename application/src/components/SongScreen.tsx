@@ -15,19 +15,51 @@ interface IProps {
 
 interface IState {
   activeSongIndex: number;
-  activeSongParsedText: any;
+  activeSong: any;
 }
+
 //              0    1     2    3     4    5     6     7    8    9   10    11   12    13   14    15   16    17    18   19   20    21    22   23
-const notes = ["C", "c", "C#", "c#", "D", "d", "D#", "d#", "E", "e", "F", "f", "F#", "f#", "G", "g", "G#", "g#", "A", "a", "B", "b", "H", "h"];
+const notes = [
+  "C",
+  "c",
+  "C#",
+  "c#",
+  "D",
+  "d",
+  "D#",
+  "d#",
+  "E",
+  "e",
+  "F",
+  "f",
+  "F#",
+  "f#",
+  "G",
+  "g",
+  "G#",
+  "g#",
+  "A",
+  "a",
+  "B",
+  "b",
+  "H",
+  "h"
+];
+const DisplayModes = {
+  CHORDS_OVER_TEXT: "CHORDS_OVER_TEXT",
+  CHORDS_NEXT_TO_TEXT: "CHORDS_NEXT_TO_TEXT",
+  NO_CHORDS: "NO_CHORDS"
+};
 
 export class SongScreen extends React.Component<IProps, IState> {
   transposition: number = 0;
+  displayMode: string = DisplayModes.NO_CHORDS;
 
   constructor(props: IProps) {
     super(props);
     this.state = {
       activeSongIndex: props.location.state.startSongIndex,
-      activeSongParsedText: this.parseSongText(
+      activeSong: this.parseSong(
         props.location.state.songs[props.location.state.startSongIndex].text
       )
     };
@@ -43,92 +75,183 @@ export class SongScreen extends React.Component<IProps, IState> {
   }
 
   switchToNextSong() {
-    const parsedText = this.parseSongText(
-      this.props.location.state.songs[
-        this.state.activeSongIndex + 1
-      ].text
+    const parsedText = this.parseSong(
+      this.props.location.state.songs[this.state.activeSongIndex + 1].text
     );
     this.setState({
       activeSongIndex: this.state.activeSongIndex + 1,
-      activeSongParsedText: parsedText
+      activeSong: parsedText
     });
   }
 
   switchToPrevSong() {
-    const parsedText = this.parseSongText(
-      this.props.location.state.songs[
-        this.state.activeSongIndex - 1
-      ].text
+    const parsedText = this.parseSong(
+      this.props.location.state.songs[this.state.activeSongIndex - 1].text
     );
     this.setState({
       activeSongIndex: this.state.activeSongIndex - 1,
-      activeSongParsedText: parsedText
+      activeSong: parsedText
     });
   }
 
-  parseSongText(rawText: string) {
-    const textLines = rawText.split("\n").map(line => line.trim());
-    console.log(textLines);
+  parseLine(textLine: string): [string[], string[]] {
+    const lineTextChunks: string[] = new Array<string>();
+    let lineChords: string[] = new Array<string>();
+    textLine
+      .split(/{|}/)
+      .map((element, index) =>
+        index % 2 === 0
+          ? lineTextChunks.push(element)
+          : lineChords.push(element)
+      );
+    lineChords = lineChords.map(lc => this.translateChord(lc));
+
+    return [lineTextChunks, lineChords];
+  }
+
+  parseSongNoChords(textLines: string[]) {
     const textLinesHtml = new Array<any>();
 
     for (const textLine of textLines) {
-      const lineTextChunks = new Array<string>();
-      let lineChords = new Array<string>();
-      textLine
-        .split(/{|}/)
-        .map((element, index) => index % 2 === 0 ? lineTextChunks.push(element) : lineChords.push(element));
-      lineChords = lineChords.map(lc => this.translateChord(lc))
+      const parsedLine = this.parseLine(textLine);
       const textLineHtml = new Array<any>();
-      for (let i = 0; i < lineTextChunks.length + lineChords.length; i++) {
-        i % 2 !== 0 ? textLineHtml.push(
-          <span className="chord">{ lineChords[Math.floor(i / 2)] }</span>
-        ) : textLineHtml.push(
-          <span>{ lineTextChunks[i / 2] }</span>
-        )
+
+      for (let i = 0; i < parsedLine[0].length; i++) {
+        textLineHtml.push(<span>{parsedLine[0][i]}</span>);
       }
-      textLinesHtml.push(
-        <p className="textLine">
-          {textLineHtml}
-        </p>
-      );
+
+      textLinesHtml.push(<p className="textLine">{textLineHtml}</p>);
+    }
+
+    return <div>{textLinesHtml}</div>;
+  }
+
+  parseSongChordsNextToText(textLines: string[]) {
+    const textLinesHtml = new Array<any>();
+    const chordLinesHtml = new Array<any>();
+
+    for (const textLine of textLines) {
+      const parsedLine = this.parseLine(textLine);
+      const textLineHtml = new Array<any>();
+
+      for (let i = 0; i < parsedLine[0].length; i++) {
+        textLineHtml.push(<span>{parsedLine[0][i]}</span>);
+      }
+
+      const chordLineHtml = new Array<any>();
+      for (let i = 0; i < parsedLine[1].length; i++) {
+        chordLineHtml.push(<span className="chordNextToText">{parsedLine[1][i]}</span>);
+      }
+
+      textLinesHtml.push(<p className="textLine">{textLineHtml}</p>);
+
+      chordLinesHtml.push(<p className="textLine">{chordLineHtml}</p>);
     }
 
     return (
       <div>
-        { textLinesHtml }
+        <div style={{ display: "inline-block", marginRight: "10px" }}>{textLinesHtml}</div>
+        <div style={{ display: "inline-block" }}>{chordLinesHtml}</div>
       </div>
     );
   }
 
+  parseSongChordsOverText(textLines: string[]) {
+    const textLinesHtml = new Array<any>();
+
+    for (const textLine of textLines) {
+      const parsedLine = this.parseLine(textLine);
+      const textLineHtml = new Array<any>();
+
+      for (let i = 0; i < parsedLine[0].length + parsedLine[1].length; i++) {
+        i % 2 !== 0
+          ? textLineHtml.push(
+              <span className="chordOverText">{parsedLine[1][Math.floor(i / 2)]}</span>
+            )
+          : textLineHtml.push(<span>{parsedLine[0][i / 2]}</span>);
+      }
+
+      textLinesHtml.push(<p className="textLine chordsOverText">{textLineHtml}</p>);
+    }
+
+    return <div>{textLinesHtml}</div>;
+  }
+
+  parseSong(rawText: string) {
+    const textLines = rawText.split("\n").map(line => line.trim());
+
+    switch (this.displayMode) {
+      case DisplayModes.CHORDS_NEXT_TO_TEXT:
+        return this.parseSongChordsNextToText(textLines);
+      case DisplayModes.CHORDS_OVER_TEXT:
+        return this.parseSongChordsOverText(textLines);
+      case DisplayModes.NO_CHORDS:
+      default:
+        return this.parseSongNoChords(textLines);
+    }
+  }
+
   translateChord(chord: string): string {
     for (let i = 0; i < notes.length; i++) {
-        chord = chord.replace(`$${i}$`, notes[(i + 2 * this.transposition) % 24])
+      chord = chord.replace(`$${i}$`, notes[(i + 2 * this.transposition) % 24]);
     }
 
     return chord;
   }
 
   onTransposeUp = () => {
-    this.transposition = this.transposition + 1 % 24;
-    this.setState({ activeSongParsedText: this.parseSongText(this.props.location.state.songs[this.props.location.state.startSongIndex].text)});
-  }
+    this.transposition = this.transposition + (1 % 24);
+    this.setState({
+      activeSong: this.parseSong(
+        this.props.location.state.songs[
+          this.props.location.state.startSongIndex
+        ].text
+      )
+    });
+  };
 
   onTransposeDown = () => {
     this.transposition = this.transposition > 0 ? this.transposition - 1 : 23;
-    this.setState({ activeSongParsedText: this.parseSongText(this.props.location.state.songs[this.props.location.state.startSongIndex].text)});
+    this.setState({
+      activeSong: this.parseSong(
+        this.props.location.state.songs[
+          this.props.location.state.startSongIndex
+        ].text
+      )
+    });
+  };
+
+  onChordsOverTextDisplayModeClick = () => {
+    this.displayMode = DisplayModes.CHORDS_OVER_TEXT;
+    this.setState({ activeSong: this.parseSong(this.props.location.state.songs[this.props.location.state.startSongIndex].text) });
+  }
+
+  onChordsNextToTextDisplayModeClick = () => {
+    this.displayMode = DisplayModes.CHORDS_NEXT_TO_TEXT;
+    this.setState({ activeSong: this.parseSong(this.props.location.state.songs[this.props.location.state.startSongIndex].text) });
+  }
+
+  onNoChordsDisplayModeClick = () => {
+    this.displayMode = DisplayModes.NO_CHORDS;
+    this.setState({ activeSong: this.parseSong(this.props.location.state.songs[this.props.location.state.startSongIndex].text) });
   }
 
   render() {
     return (
       <div id="songScreenWrapper">
-        <button onClick={this.onTransposeUp}>Transpose up</button>
-        <button onClick={this.onTransposeDown}>Transpose down</button>
+        <div>
+          <button onClick={this.onTransposeUp}>Transpose up</button>
+          <button onClick={this.onTransposeDown}>Transpose down</button>
+        </div>
+        <div>
+          <button onClick={this.onChordsOverTextDisplayModeClick}>Chords over text</button>
+          <button onClick={this.onChordsNextToTextDisplayModeClick}>Chords next to text</button>
+          <button onClick={this.onNoChordsDisplayModeClick}>No chords</button>
+        </div>
         <h1 id="songTitleHeader">
           {this.props.location.state.songs[this.state.activeSongIndex].title}
         </h1>
-        <p id="songText">
-          {this.state.activeSongParsedText}
-        </p>
+        <p id="songText">{this.state.activeSong}</p>
         <div id="songScreenNavButtonsWrapper">
           <button
             disabled={

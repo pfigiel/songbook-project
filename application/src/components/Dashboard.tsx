@@ -27,18 +27,17 @@ export class Dashboard extends React.Component {
   }
 
   async componentDidMount() {
-    await this.identityService.validateToken();
+    await this.identityService.tryAuthenticate();
   }
 
   render() {
     return (
       <div>
-        {headerHOC}
+        <Header/>
         <div id="dashboardWrapper">
           <SongsList />
         </div>
       </div>
-      
     );
   }
 }

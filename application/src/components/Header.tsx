@@ -16,25 +16,21 @@ interface IProps {
 const mapStateToProps = (state: State) => {
   return {
     isLoggedIn: state.isLoggedIn,
-    user: state.user
+    user: state.user,
+    isLoading: false
   };
 };
 
-export class Header extends React.Component<IProps> {
+export class UnconnectedHeader extends React.Component<IProps> {
   identityService: IdentityService;
 
   constructor(props: IProps) {
     super(props);
-    console.log("ASDF");
     this.identityService = new IdentityService();
   }
 
   onSignOutButtonClick = async () => {
     const signOutResult = await this.identityService.signOut();
-  }
-
-  componentWillUnmount() {
-    console.log("UN");
   }
 
   render() {
@@ -73,5 +69,5 @@ export class Header extends React.Component<IProps> {
   }
 }
 
-// const Header = connect(mapStateToProps)(UnconnectedHeader);
-// export { Header };
+const Header = connect(mapStateToProps)(UnconnectedHeader);
+export { Header };
