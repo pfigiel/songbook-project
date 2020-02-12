@@ -119,14 +119,15 @@ namespace SongbookProject.Data
             if (!identityContext.Roles.Any())
             {
                 var adminRole = new IdentityRole { Name = RoleNames.Admin };
+                var editorRole = new IdentityRole { Name = RoleNames.Editor };
                 var defaultRole = new IdentityRole { Name = RoleNames.Default };
+
                 await roleManager.CreateAsync(adminRole);
+                await roleManager.CreateAsync(editorRole);
                 await roleManager.CreateAsync(defaultRole);
-                //identityContext.Roles.Add(adminRole);
-                //identityContext.Roles.Add(defaultRole);
             }
 
-            if (!identityContext.Users.Any())
+            if (!identityContext.Users.Where(u => u.Email == adminCredentials.Email).Any())
             {
                 var user = new IdentityUser()
                 {
@@ -134,8 +135,11 @@ namespace SongbookProject.Data
                     Email = adminCredentials.Email,
                     EmailConfirmed = true
                 };
+
                 await userManager.CreateAsync(user, adminCredentials.Password);
                 await userManager.AddToRoleAsync(user, RoleNames.Admin);
+                await userManager.AddToRoleAsync(user, RoleNames.Editor);
+
                 identityContext.Users.Add(user);
             }
         }

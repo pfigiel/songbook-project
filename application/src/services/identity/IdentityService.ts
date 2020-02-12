@@ -1,7 +1,7 @@
 import { login } from "../../store/actions/login";
 import { signOut } from "../../store/actions/signOut";
 import { store } from "../../store/index";
-import { IApiUser } from "../../models/IApiUser";
+import { User } from "../../models/User";
 import { AuthenticateResult } from "./AuthenticateResult";
 import { OK, UNAUTHORIZED } from "../../utils/httpStatusCodes";
 import { authorizedFetch } from "../../utils/authorizedFetch";
@@ -10,22 +10,45 @@ import { StorageService } from "../StorageService";
 import { ActionResult } from "../../utils/ActionResult";
 import { config } from "../../utils/config";
 
+export const Roles = {
+    ADMIN: "Admin",
+    EDITOR: "Editor",
+    DEFAULT: "Default"
+}
+
 export class IdentityService {
-    public async validateToken() {
+    public async tryAuthenticate() {
+        if (StorageService.get(StorageService.JWT_TOKEN) !== null && StorageService.get(StorageService.REFRESH_TOKEN) !== null) {
+            const validateResult = await this.validateToken();
+
+            if (validateResult.isSuccess) {
+                StorageService.set(StorageService.EMAIL, validateResult.user.email);
+                store.dispatch(login(validateResult.user));
+            } else {
+                this.signOutClient();
+            }
+        }
+    }
+
+    public async validateToken(): Promise<ValidateTokenResult> {
         const response = await authorizedFetch(config.api.routes.validateToken, {
             method: "POST"
         });
+
         if (response.status === OK) {
-            const responseBody = (await response.json()) as IApiUser;
-            StorageService.set(StorageService.EMAIL, responseBody.email);
-            store.dispatch(login());
-            return { isSuccess: true, isTokenValid: true } as ValidateTokenResult;
+            const responseBody = (await response.json()) as User;
+            return {
+                isSuccess: true,
+                isTokenValid: true,
+                user: responseBody
+            } as ValidateTokenResult;
         } else if (response.status === UNAUTHORIZED) {
             return await this.refreshToken();
         }
-        
+
         StorageService.remove(StorageService.JWT_TOKEN);
         StorageService.remove(StorageService.REFRESH_TOKEN);
+
         return { isSuccess: false } as ValidateTokenResult;
     }
 
@@ -39,15 +62,22 @@ export class IdentityService {
                 RefreshToken: StorageService.get(StorageService.REFRESH_TOKEN)
             })
         });
+
         if (refreshResponse.status === OK) {
-            const refreshResponseBody = (await refreshResponse.json()) as IApiUser;
+            const refreshResponseBody = (await refreshResponse.json()) as User;
             StorageService.set(StorageService.JWT_TOKEN, refreshResponseBody.token);
             StorageService.set(StorageService.REFRESH_TOKEN, refreshResponseBody.refreshToken);
             StorageService.set(StorageService.EMAIL, refreshResponseBody.email);
             StorageService.set(StorageService.ROLES, refreshResponseBody.roles);
-            store.dispatch(login());
-            return { isSuccess: true } as ValidateTokenResult;
+            store.dispatch(login(refreshResponseBody));
+
+            return {
+                isSuccess: true,
+                user: refreshResponseBody
+            } as ValidateTokenResult;
         }
+
+        return { isSuccess: false } as ValidateTokenResult;
     }
 
     public async authenticate(email: string, password: string): Promise<AuthenticateResult> {
@@ -63,9 +93,9 @@ export class IdentityService {
         });
 
         if (response.status === OK) {
-            const loginData = (await response.json()) as IApiUser;
+            const loginData = (await response.json()) as User;
 
-            store.dispatch(login());
+            store.dispatch(login(loginData));
 
             StorageService.set(StorageService.JWT_TOKEN, loginData.token);
             StorageService.set(StorageService.REFRESH_TOKEN, loginData.refreshToken);
@@ -74,9 +104,15 @@ export class IdentityService {
 
             return { isSuccess: true } as AuthenticateResult;
         } else if (response.status === UNAUTHORIZED) {
-            return { isSuccess: false, error: AuthenticateResult.WRONG_CREDENTIALS } as AuthenticateResult;
+            return {
+                isSuccess: false,
+                error: AuthenticateResult.WRONG_CREDENTIALS
+            } as AuthenticateResult;
         } else {
-            return { isSuccess: false, error: AuthenticateResult.SERVER_ERROR } as AuthenticateResult;
+            return {
+                isSuccess: false,
+                error: AuthenticateResult.SERVER_ERROR
+            } as AuthenticateResult;
         }
     }
 
@@ -88,17 +124,22 @@ export class IdentityService {
             },
             body: JSON.stringify({ RefreshToken: StorageService.get(StorageService.REFRESH_TOKEN) })
         });
-        
+
+        this.signOutClient();
+
         if (response.status === OK) {
-            store.dispatch(signOut());
-            StorageService.set(StorageService.JWT_TOKEN, undefined);
-            StorageService.set(StorageService.REFRESH_TOKEN, undefined);
-            StorageService.set(StorageService.EMAIL, undefined);
-            StorageService.set(StorageService.ROLES, undefined);
             return { isSuccess: true } as ActionResult;
         } else {
             return { isSuccess: false } as ActionResult;
         }
+    }
+
+    public signOutClient(): void {
+        store.dispatch(signOut());
+        StorageService.remove(StorageService.JWT_TOKEN);
+        StorageService.remove(StorageService.REFRESH_TOKEN);
+        StorageService.remove(StorageService.EMAIL);
+        StorageService.remove(StorageService.ROLES);
     }
 
     public async register(email: string, password: string): Promise<ActionResult> {

@@ -195,7 +195,37 @@
     }
 }
 
+#songScreenWrapper {
+    padding: 20px;
 
+    #songScreenNavButtonsWrapper {
+        position: absolute;
+        width: calc(100% - 40px);
+        left: 20px;
+        bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+    
+        & > button {
+            width: 200px;
+            bottom: 20px;
+        }
+    }
+    
+    #songTitleHeader {
+        padding-bottom: 40px;
+        font-size: 30px;
+    }
+    
+    span.chord {
+        position: absolute;
+        margin: -1rem 0 0 -0.5rem;
+    }
+    
+    p.textLine {
+        padding-bottom: 30px;
+    }
+}
 
 
 
@@ -207,5 +237,4 @@
 @import "./header.scss";
 @import "./homeHeader.scss";
 @import "./languageSwitch.scss";
-@import "./songScreen.scss";
 @import "./songsList.scss";

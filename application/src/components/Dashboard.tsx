@@ -16,12 +16,6 @@ export class Dashboard extends React.Component {
     this.identityService = new IdentityService();
   }
 
-  async componentDidMount() {
-    if (StorageService.get(StorageService.JWT_TOKEN) !== null && StorageService.get(StorageService.REFRESH_TOKEN) !== null) {
-      await this.identityService.validateToken();
-    }
-  }
-
   render() {
     return (
       <div>

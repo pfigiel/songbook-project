@@ -17,8 +17,12 @@ interface IState {
   activeSongIndex: number;
   activeSongParsedText: any;
 }
+//              0    1     2    3     4    5     6     7    8    9   10    11   12    13   14    15   16    17    18   19   20    21    22   23
+const notes = ["C", "c", "C#", "c#", "D", "d", "D#", "d#", "E", "e", "F", "f", "F#", "f#", "G", "g", "G#", "g#", "A", "a", "B", "b", "H", "h"];
 
 export class SongScreen extends React.Component<IProps, IState> {
+  transposition: number = 0;
+
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -63,12 +67,17 @@ export class SongScreen extends React.Component<IProps, IState> {
   }
 
   parseSongText(rawText: string) {
-    const textLines = rawText.split("\\n").map(line => line.trim());
+    const textLines = rawText.split("\n").map(line => line.trim());
+    console.log(textLines);
     const textLinesHtml = new Array<any>();
+
     for (const textLine of textLines) {
       const lineTextChunks = new Array<string>();
-      const lineChords = new Array<string>();
-      textLine.split(/{|}/).map((element, index) => index % 2 === 0 ? lineTextChunks.push(element) : lineChords.push(element));
+      let lineChords = new Array<string>();
+      textLine
+        .split(/{|}/)
+        .map((element, index) => index % 2 === 0 ? lineTextChunks.push(element) : lineChords.push(element));
+      lineChords = lineChords.map(lc => this.translateChord(lc))
       const textLineHtml = new Array<any>();
       for (let i = 0; i < lineTextChunks.length + lineChords.length; i++) {
         i % 2 !== 0 ? textLineHtml.push(
@@ -78,7 +87,7 @@ export class SongScreen extends React.Component<IProps, IState> {
         )
       }
       textLinesHtml.push(
-        <p>
+        <p className="textLine">
           {textLineHtml}
         </p>
       );
@@ -91,9 +100,29 @@ export class SongScreen extends React.Component<IProps, IState> {
     );
   }
 
+  translateChord(chord: string): string {
+    for (let i = 0; i < notes.length; i++) {
+        chord = chord.replace(`$${i}$`, notes[(i + 2 * this.transposition) % 24])
+    }
+
+    return chord;
+  }
+
+  onTransposeUp = () => {
+    this.transposition = this.transposition + 1 % 24;
+    this.setState({ activeSongParsedText: this.parseSongText(this.props.location.state.songs[this.props.location.state.startSongIndex].text)});
+  }
+
+  onTransposeDown = () => {
+    this.transposition = this.transposition > 0 ? this.transposition - 1 : 23;
+    this.setState({ activeSongParsedText: this.parseSongText(this.props.location.state.songs[this.props.location.state.startSongIndex].text)});
+  }
+
   render() {
     return (
       <div id="songScreenWrapper">
+        <button onClick={this.onTransposeUp}>Transpose up</button>
+        <button onClick={this.onTransposeDown}>Transpose down</button>
         <h1 id="songTitleHeader">
           {this.props.location.state.songs[this.state.activeSongIndex].title}
         </h1>

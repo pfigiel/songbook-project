@@ -10,8 +10,23 @@ import { store } from "../store/index";
 import { SignInScreen } from "./SignInScreen";
 import { RegisterScreen } from "./RegisterScreen";
 import { SongEditScreen } from "./SongEditScreen";
+import { StorageService } from "../services/StorageService";
+import { IdentityService } from "../services/identity/IdentityService";
+
+interface IProps {}
 
 export class App extends React.Component {
+  identityService: IdentityService;
+  
+  constructor(props: IProps) {
+    super(props);
+    this.identityService = new IdentityService();
+  }
+
+  async componentDidMount() {
+      await this.identityService.tryAuthenticate();
+  }
+
   render() {
     return (
       <Provider store={store}>

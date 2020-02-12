@@ -3,27 +3,44 @@ import { appContext } from "../utils/AppContext";
 import { ISong } from "../models/ISong";
 import { FormattedMessage } from "react-intl";
 import { config } from "../utils/config";
-import { StorageService } from "../services/StorageService";
-import { Roles } from "../services/identity/Roles";
+import { Roles } from "../services/identity/IdentityService";
 import { SongsService } from "../services/SongsService";
 import { EditMode, LocationState } from "./SongEditScreen";
+import { IdentityService } from "../services/identity/IdentityService";
+import { State } from "../store/models/State";
+import { User } from "../models/User";
+import { connect } from "react-redux";
+
+interface IProps {
+  isLoggedIn: boolean;
+  user: User;
+}
 
 interface IState {
   songs: Array<ISong>;
   isLoading: boolean;
 }
 
-export class SongsList extends React.Component<{}, IState> {
+const mapStateToProps = (state: State) => {
+  return {
+    isLoggedIn: state.isLoggedIn,
+    user: state.user
+  }
+}
+
+class UnconnectedSongsList extends React.Component<IProps, IState> {
   state = {
     songs: [],
     isLoading: false
   };
 
   songsService: SongsService;
+  identityService: IdentityService;
 
-  constructor(props: {}, state: IState) {
+  constructor(props: IProps, state: IState) {
     super(props, state);
     this.songsService = new SongsService();
+    this.identityService = new IdentityService();
   }
 
   async componentDidMount() {
@@ -47,12 +64,16 @@ export class SongsList extends React.Component<{}, IState> {
           <button onClick={() => this.onViewSongButtonClick(index)}>
             <FormattedMessage id="dashboard.view" defaultMessage="View" />
           </button>
-          <button onClick={() => this.onModifySongButtonClick(song)}>
-            <FormattedMessage id="dashboard.modify" defaultMessage="Modify" />
-          </button>
-          <button onClick={() => this.onDeleteSongButtonClick(song)}>
-            <FormattedMessage id="dashboard.delete" defaultMessage="Delete" />
-          </button>
+          {this.props.isLoggedIn && this.props.user.roles.includes(Roles.EDITOR) &&
+            <>
+              <button onClick={() => this.onModifySongButtonClick(song)}>
+                <FormattedMessage id="dashboard.modify" defaultMessage="Modify" />
+              </button>
+              <button onClick={() => this.onDeleteSongButtonClick(song)}>
+                <FormattedMessage id="dashboard.delete" defaultMessage="Delete" />
+              </button>
+            </>
+          }
         </th>
       </tr>
     );
@@ -119,14 +140,17 @@ export class SongsList extends React.Component<{}, IState> {
                   )}
                 </tbody>
               </table>
-              {StorageService.get(StorageService.ROLES) && StorageService.get(StorageService.ROLES).includes(Roles.ADMIN) && (
+              {this.props.isLoggedIn && this.props.user.roles.includes(Roles.EDITOR) &&
                 <button onClick={this.onAddSongButtonClick}>
                   <FormattedMessage id="songsList.addSong" defaultMessage="Add song" />
                 </button>
-              )}
+              }
             </div>
           )}
       </div>
     );
   }
 }
+
+const SongsList = connect(mapStateToProps)(UnconnectedSongsList);
+export { SongsList }
