@@ -32,11 +32,7 @@ export class App extends React.Component {
       <Provider store={store}>
         <Router history={appContext.history}>
           <Route exact path={config.clientRoutes.home} component={Home} />
-          <Route
-            exact
-            path={config.clientRoutes.dashboard}
-            component={Dashboard}
-          />
+          <Route exact path={config.clientRoutes.dashboard} component={Dashboard} />
           <Route exact path={config.clientRoutes.song} component={SongScreen} />
           <Route exact path={config.clientRoutes.signIn} component={SignInScreen} />
           <Route exact path={config.clientRoutes.register} component={RegisterScreen} />

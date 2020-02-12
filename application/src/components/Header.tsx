@@ -3,14 +3,14 @@ import { LanguageSwitch } from "./LanguageSwitch";
 import { FormattedMessage } from "react-intl";
 import { State } from "../store/models/State";
 import { connect } from "react-redux";
-import { StorageService } from "../services/StorageService";
 import { config } from "../utils/config";
 import { IdentityService } from "../services/identity/IdentityService";
 import { User } from "../models/User";
 
 interface IProps {
+  isLoading: boolean;
   isLoggedIn: boolean;
-  user: User;
+  user: User
 }
 
 const mapStateToProps = (state: State) => {
@@ -20,16 +20,21 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-class UnconnectedHeader extends React.Component<IProps> {
+export class Header extends React.Component<IProps> {
   identityService: IdentityService;
 
   constructor(props: IProps) {
     super(props);
+    console.log("ASDF");
     this.identityService = new IdentityService();
   }
 
   onSignOutButtonClick = async () => {
     const signOutResult = await this.identityService.signOut();
+  }
+
+  componentWillUnmount() {
+    console.log("UN");
   }
 
   render() {
@@ -68,5 +73,5 @@ class UnconnectedHeader extends React.Component<IProps> {
   }
 }
 
-const Header = connect(mapStateToProps)(UnconnectedHeader);
-export { Header };
+// const Header = connect(mapStateToProps)(UnconnectedHeader);
+// export { Header };

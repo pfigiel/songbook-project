@@ -61,7 +61,7 @@ export class SignInScreen extends React.Component<IProps> {
     render() {
         return (
             <>
-            <Header />
+            {/* <Header /> */}
                 <div id="signInScreen">
                     <form onSubmit={this.onSubmit}>
                         <label>

@@ -8,11 +8,15 @@ import { SongsService } from "../services/SongsService";
 import { EditMode, LocationState } from "./SongEditScreen";
 import { IdentityService } from "../services/identity/IdentityService";
 import { State } from "../store/models/State";
-import { User } from "../models/User";
 import { connect } from "react-redux";
+import { User } from "../models/User";
 
 interface IProps {
   isLoggedIn: boolean;
+}
+
+
+interface IProps {
   user: User;
 }
 
@@ -29,11 +33,11 @@ const mapStateToProps = (state: State) => {
 }
 
 class UnconnectedSongsList extends React.Component<IProps, IState> {
-  state = {
+  state: IState = {
+    isLoading: false,
     songs: [],
-    isLoading: false
   };
-
+  
   songsService: SongsService;
   identityService: IdentityService;
 
@@ -44,7 +48,7 @@ class UnconnectedSongsList extends React.Component<IProps, IState> {
   }
 
   async componentDidMount() {
-    await this.fetchSongs();
+    this.fetchSongs();
   }
 
   async fetchSongs() {
@@ -153,4 +157,4 @@ class UnconnectedSongsList extends React.Component<IProps, IState> {
 }
 
 const SongsList = connect(mapStateToProps)(UnconnectedSongsList);
-export { SongsList }
+export { SongsList };

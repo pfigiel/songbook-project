@@ -126,7 +126,7 @@ export class SongEditScreen extends React.Component<IProps, IState> {
     render() {
         return (
             <>
-            <Header />
+            {/* <Header /> */}
                 <div id="songEditScreen">
                     <form onSubmit={this.onSubmit}>
                         <label>

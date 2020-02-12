@@ -6,7 +6,7 @@ import { User } from "../../models/User";
 
 const initialState: State = new State();
 
-const rootReducer = (state = initialState, action: Action) => {
+const rootReducer = (state = initialState, action: Action): State => {
     switch (action.type) {
         case actionTypes.LOGIN:
             const loginAction = action as LoginAction;
