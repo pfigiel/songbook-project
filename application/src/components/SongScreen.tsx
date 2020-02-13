@@ -3,6 +3,7 @@ import { FormattedMessage } from "react-intl";
 import { appContext } from "../utils/AppContext";
 import { config } from "../utils/config";
 import { ISong } from "../models/ISong";
+import { SongScreenSettingsMenu } from "./SongScreenSettingsMenu";
 
 interface IProps {
   location: {
@@ -16,9 +17,10 @@ interface IProps {
 interface IState {
   activeSongIndex: number;
   activeSong: any;
+  isMenuVisible: boolean;
+  fontSize: number;
 }
 
-//              0    1     2    3     4    5     6     7    8    9   10    11   12    13   14    15   16    17    18   19   20    21    22   23
 const notes = [
   "C",
   "c",
@@ -61,7 +63,9 @@ export class SongScreen extends React.Component<IProps, IState> {
       activeSongIndex: props.location.state.startSongIndex,
       activeSong: this.parseSong(
         props.location.state.songs[props.location.state.startSongIndex].text
-      )
+      ),
+      isMenuVisible: false,
+      fontSize: 20
     };
 
     this.switchToPrevSong = this.switchToPrevSong.bind(this);
@@ -72,6 +76,7 @@ export class SongScreen extends React.Component<IProps, IState> {
     this.setState({
       activeSongIndex: this.props.location.state.startSongIndex
     });
+    console.log(window.innerHeight);
   }
 
   switchToNextSong() {
@@ -239,19 +244,26 @@ export class SongScreen extends React.Component<IProps, IState> {
   render() {
     return (
       <div id="songScreenWrapper">
-        <div>
-          <button onClick={this.onTransposeUp}>Transpose up</button>
-          <button onClick={this.onTransposeDown}>Transpose down</button>
-        </div>
-        <div>
-          <button onClick={this.onChordsOverTextDisplayModeClick}>Chords over text</button>
-          <button onClick={this.onChordsNextToTextDisplayModeClick}>Chords next to text</button>
-          <button onClick={this.onNoChordsDisplayModeClick}>No chords</button>
+        <div id="menuWrapper">
+          <button
+            onClick={() => this.setState({ isMenuVisible: !this.state.isMenuVisible })}
+            id="menuButton">
+              <FormattedMessage id="songScreen.settings" defaultMessage="Settings" />
+            </button>
+          {this.state.isMenuVisible &&
+            <SongScreenSettingsMenu
+              onTransposeUp={this.onTransposeUp}
+              onTransposeDown={this.onTransposeDown}
+              onChordsOverTextDisplayModeClick={this.onChordsOverTextDisplayModeClick}
+              onChordsNextToTextDisplayModeClick={this.onChordsNextToTextDisplayModeClick}
+              onNoChordsDisplayModeClick={this.onNoChordsDisplayModeClick}
+            />
+          }
         </div>
         <h1 id="songTitleHeader">
           {this.props.location.state.songs[this.state.activeSongIndex].title}
         </h1>
-        <p id="songText">{this.state.activeSong}</p>
+        <p id="songText" style={{ fontSize: this.state.fontSize }}>{this.state.activeSong}</p>
         <div id="songScreenNavButtonsWrapper">
           <button
             disabled={

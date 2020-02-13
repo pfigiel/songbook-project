@@ -27,5 +27,11 @@
     "songsList.artist": "Artist",
     "songsList.language": "Language",
     "songsList.title": "Title",
-    "songsList.originalTitle": "Original title"
+    "songsList.originalTitle": "Original title",
+    "songScreen.chordsNextToText": "Chords next to text",
+    "songScreen.chordsOverText": "Chords over text",
+    "songScreen.noChords": "No chords",
+    "songScreen.settings": "Settings",
+    "songScreen.transposeDown": "Transpose down",
+    "songScreen.transposeUp": "Transpose up"
 }
