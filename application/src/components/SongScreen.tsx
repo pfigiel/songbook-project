@@ -4,6 +4,7 @@ import { appContext } from "../utils/AppContext";
 import { config } from "../utils/config";
 import { ISong } from "../models/ISong";
 import { SongScreenSettingsMenu } from "./SongScreenSettingsMenu";
+import { SongScreenService } from "../services/SongScreenService";
 
 interface IProps {
   location: {
@@ -19,34 +20,11 @@ interface IState {
   activeSong: any;
   isMenuVisible: boolean;
   fontSize: number;
+  textPaddingTop: number;
+  lineHeight: number;
+  songSectionsCount: number;
 }
 
-const notes = [
-  "C",
-  "c",
-  "C#",
-  "c#",
-  "D",
-  "d",
-  "D#",
-  "d#",
-  "E",
-  "e",
-  "F",
-  "f",
-  "F#",
-  "f#",
-  "G",
-  "g",
-  "G#",
-  "g#",
-  "A",
-  "a",
-  "B",
-  "b",
-  "H",
-  "h"
-];
 const DisplayModes = {
   CHORDS_OVER_TEXT: "CHORDS_OVER_TEXT",
   CHORDS_NEXT_TO_TEXT: "CHORDS_NEXT_TO_TEXT",
@@ -54,19 +32,21 @@ const DisplayModes = {
 };
 
 export class SongScreen extends React.Component<IProps, IState> {
+  service: SongScreenService = new SongScreenService();
   transposition: number = 0;
   displayMode: string = DisplayModes.NO_CHORDS;
 
   constructor(props: IProps) {
     super(props);
     this.state = {
+      activeSong: <div></div>,
       activeSongIndex: props.location.state.startSongIndex,
-      activeSong: this.parseSong(
-        props.location.state.songs[props.location.state.startSongIndex].text
-      ),
+      fontSize: 20,
+      lineHeight: 30,
+      textPaddingTop: 0,
       isMenuVisible: false,
-      fontSize: 20
-    };
+      songSectionsCount: 1
+    }
 
     this.switchToPrevSong = this.switchToPrevSong.bind(this);
     this.switchToNextSong = this.switchToNextSong.bind(this);
@@ -74,9 +54,18 @@ export class SongScreen extends React.Component<IProps, IState> {
 
   componentDidMount() {
     this.setState({
-      activeSongIndex: this.props.location.state.startSongIndex
+      activeSong: this.parseSong(
+        this.props.location.state.songs[this.props.location.state.startSongIndex].text
+      ),
     });
-    console.log(window.innerHeight);
+  }
+
+  calculateTextSectionHeight(): number {
+    return window.innerHeight - 20 - 30 - 40 - 40 - 25 - 20;
+  }
+
+  calculateTextSectionWidth(): number {
+    return window.innerWidth - 20 - 20;
   }
 
   switchToNextSong() {
@@ -109,12 +98,12 @@ export class SongScreen extends React.Component<IProps, IState> {
           ? lineTextChunks.push(element)
           : lineChords.push(element)
       );
-    lineChords = lineChords.map(lc => this.translateChord(lc));
+    lineChords = lineChords.length !== 0 ? lineChords.map(lc => this.service.translateChord(lc, this.transposition)) : [" "];
 
     return [lineTextChunks, lineChords];
   }
 
-  parseSongNoChords(textLines: string[]) {
+  parseSongNoChords = (textLines: string[]) => {
     const textLinesHtml = new Array<any>();
 
     for (const textLine of textLines) {
@@ -125,17 +114,17 @@ export class SongScreen extends React.Component<IProps, IState> {
         textLineHtml.push(<span>{parsedLine[0][i]}</span>);
       }
 
-      textLinesHtml.push(<p className="textLine">{textLineHtml}</p>);
+      textLinesHtml.push(<div className="textLine" style={{ lineHeight: `${this.state.lineHeight}px` }}>{textLineHtml}</div >);
     }
 
     return <div>{textLinesHtml}</div>;
   }
 
-  parseSongChordsNextToText(textLines: string[]) {
+  parseSongChordsNextToText = (textLines: string[]) => {
     const textLinesHtml = new Array<any>();
     const chordLinesHtml = new Array<any>();
 
-    for (const textLine of textLines) {
+    for (const textLine of textLines.filter(tl => tl !== "")) {
       const parsedLine = this.parseLine(textLine);
       const textLineHtml = new Array<any>();
 
@@ -148,9 +137,9 @@ export class SongScreen extends React.Component<IProps, IState> {
         chordLineHtml.push(<span className="chordNextToText">{parsedLine[1][i]}</span>);
       }
 
-      textLinesHtml.push(<p className="textLine">{textLineHtml}</p>);
+      textLinesHtml.push(<p className="textLine" style={{ lineHeight: `${this.state.lineHeight}px` }}>{textLineHtml}</p>);
 
-      chordLinesHtml.push(<p className="textLine">{chordLineHtml}</p>);
+      chordLinesHtml.push(<p className="textLine" style={{ lineHeight: `${this.state.lineHeight}px` }}>{chordLineHtml}</p>);
     }
 
     return (
@@ -161,7 +150,7 @@ export class SongScreen extends React.Component<IProps, IState> {
     );
   }
 
-  parseSongChordsOverText(textLines: string[]) {
+  parseSongChordsOverText = (textLines: string[]) => {
     const textLinesHtml = new Array<any>();
 
     for (const textLine of textLines) {
@@ -176,32 +165,59 @@ export class SongScreen extends React.Component<IProps, IState> {
           : textLineHtml.push(<span>{parsedLine[0][i / 2]}</span>);
       }
 
-      textLinesHtml.push(<p className="textLine chordsOverText">{textLineHtml}</p>);
+      textLinesHtml.push(<p className="textLine chordsOverText" style={{ lineHeight: `${this.state.lineHeight}px` }}>{textLineHtml}</p>);
     }
 
     return <div>{textLinesHtml}</div>;
   }
 
-  parseSong(rawText: string) {
+  parseSong = (rawText: string) => {
     const textLines = rawText.split("\n").map(line => line.trim());
+    const parsedLines = textLines.map(tl => this.parseLine(tl));
+    let fontSizePerHeight;
+    let fontSizePerWidth;
+    let fontSize;
 
     switch (this.displayMode) {
       case DisplayModes.CHORDS_NEXT_TO_TEXT:
+        const maxLineLength = Math.max(...parsedLines.map(pl => pl[0].join("").length)) + Math.max(...parsedLines.map(pl => pl[1].join(" ").length));
+        fontSizePerHeight = Math.floor(this.calculateTextSectionHeight() / textLines.length / 3 * 2);
+        fontSizePerWidth = Math.floor(this.calculateTextSectionWidth() / maxLineLength / 0.5);
+        fontSize = Math.min(fontSizePerWidth, fontSizePerHeight);
+
+        this.setState({
+          fontSize,
+          lineHeight: fontSize * 1.5,
+          textPaddingTop: (this.calculateTextSectionHeight() - fontSize * 1.5 * textLines.length) * 2 / 5
+        });
+
         return this.parseSongChordsNextToText(textLines);
       case DisplayModes.CHORDS_OVER_TEXT:
+        fontSizePerHeight = Math.floor(this.calculateTextSectionHeight() / parsedLines.length / 3);
+        fontSizePerWidth = Math.floor(this.calculateTextSectionWidth() / Math.max(...parsedLines.map(pl => pl[0].join("").length)) / 0.5);
+        fontSize = Math.min(fontSizePerWidth, fontSizePerHeight);
+
+        this.setState({
+          fontSize,
+          lineHeight: fontSize * 3,
+          textPaddingTop: (this.calculateTextSectionHeight() - fontSize * 3 * parsedLines.length) * 2 / 5
+        });
+
         return this.parseSongChordsOverText(textLines);
       case DisplayModes.NO_CHORDS:
       default:
+        fontSizePerHeight = Math.floor(this.calculateTextSectionHeight() / parsedLines.length / 3 * 2);
+        fontSizePerWidth = Math.floor(this.calculateTextSectionWidth() / Math.max(...parsedLines.map(pl => pl[0].join("").length)) / 0.5);
+        fontSize = Math.min(fontSizePerWidth, fontSizePerHeight);
+
+        this.setState({
+          fontSize,
+          lineHeight: fontSize * 1.5,
+          textPaddingTop: (this.calculateTextSectionHeight() - fontSize * 1.5 * parsedLines.length) * 2 / 5
+        });
+
         return this.parseSongNoChords(textLines);
     }
-  }
-
-  translateChord(chord: string): string {
-    for (let i = 0; i < notes.length; i++) {
-      chord = chord.replace(`$${i}$`, notes[(i + 2 * this.transposition) % 24]);
-    }
-
-    return chord;
   }
 
   onTransposeUp = () => {
@@ -263,7 +279,7 @@ export class SongScreen extends React.Component<IProps, IState> {
         <h1 id="songTitleHeader">
           {this.props.location.state.songs[this.state.activeSongIndex].title}
         </h1>
-        <p id="songText" style={{ fontSize: this.state.fontSize }}>{this.state.activeSong}</p>
+        <div id="songText" style={{ fontSize: this.state.fontSize, paddingTop: this.state.textPaddingTop }}>{this.state.activeSong}</div>
         <div id="songScreenNavButtonsWrapper">
           <button
             disabled={

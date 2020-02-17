@@ -228,7 +228,7 @@
     
     span.chordOverText {
         position: absolute;
-        margin: -1rem 0 0 -0.5rem;
+        margin: -1em 0 0 -0.5em;
     }
 
     span.chordNextToText {
@@ -236,11 +236,11 @@
     }
     
     p.textLine {
-        padding-bottom: 10px;
+        // padding-bottom: 10px;
 
-        &.chordsOverText {
-            padding-bottom: 30px;
-        }
+        // &.chordsOverText {
+        //     padding-bottom: 30px;
+        // }
     }
 }
 
