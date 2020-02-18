@@ -26,10 +26,6 @@ export class Dashboard extends React.Component {
     this.identityService = new IdentityService();
   }
 
-  async componentDidMount() {
-    await this.identityService.tryAuthenticate();
-  }
-
   render() {
     return (
       <div>

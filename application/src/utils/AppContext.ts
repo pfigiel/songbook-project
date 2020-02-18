@@ -9,6 +9,7 @@ class AppContext {
   public history: History;
   public cookies: Cookies;
   public songsService: SongsService;
+  public triedInitialAuthentication: boolean;
 
   public switchToEnglish(): void {}
   public switchToPolish(): void {}
@@ -17,6 +18,7 @@ class AppContext {
     this.history = history;
     this.cookies = new Cookies();
     this.songsService = new SongsService();
+    this.triedInitialAuthentication = false;
   }
 
   getInstance() {
@@ -30,6 +32,10 @@ class AppContext {
   initializeLanguageSwitches(switchToPolish: any, switchToEnglish: any): void {
     this.switchToPolish = switchToPolish;
     this.switchToEnglish = switchToEnglish;
+  }
+
+  signalInitialAuthentication(): void {
+    this.triedInitialAuthentication = true;
   }
 }
 

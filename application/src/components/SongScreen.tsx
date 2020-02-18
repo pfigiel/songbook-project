@@ -69,11 +69,11 @@ export class SongScreen extends React.Component<IProps, IState> {
   }
 
   calculateTextSectionHeight(): number {
-    return window.innerHeight - 20 - 30 - 40 - 40 - 25 - 20;
+    return window.innerHeight - 40 - 30 - 40 - 40 - 25 - 40;
   }
 
   calculateTextSectionWidth(): number {
-    return window.innerWidth - 20 - 20;
+    return window.innerWidth - 40 - 40;
   }
 
   switchToNextSong() {
@@ -274,9 +274,9 @@ export class SongScreen extends React.Component<IProps, IState> {
       const innards: any[] = [];
       for (let i = 0; i < songSections.length; i++) {
         innards.push(
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div style={{ marginRight: "10px", whiteSpace: "nowrap" }}>{textLinesHtml[i]}</div>
-            <div style={{ whiteSpace: "nowrap" }}>{chordLinesHtml[i]}</div>
+            <div style={{ whiteSpace: "nowrap", textAlign: "right" }}>{chordLinesHtml[i]}</div>
           </div>
         )
       }
@@ -344,7 +344,7 @@ export class SongScreen extends React.Component<IProps, IState> {
     const maxFontSizePerHeightTwoColumns = Math.floor(
       this.calculateTextSectionHeight() / Math.max(
         songSections.slice(0, lastSectionInFirstColumnIndex + 1).flat().length + (songSections.slice(0, lastSectionInFirstColumnIndex + 1).length - 1),
-        songSections.slice(lastSectionInFirstColumnIndex + 1, songSections.length).flat().length + (songSections.slice(lastSectionInFirstColumnIndex + 1, songSections.length).length - 1)) * 2 / 3);
+        songSections.slice(lastSectionInFirstColumnIndex + 1, songSections.length).flat().length + (songSections.slice(lastSectionInFirstColumnIndex + 1, songSections.length).length - 1)) / 3);
     const maxFontSizePerWidthTwoColumns = Math.floor(this.calculateTextSectionWidth() / maxLineLengthTwoColumns / this.fontHeightToWidthRatio / 1.7)
 
     const maxFontSizeSingleColumn = Math.min(maxFontSizePerHeightSingleColumn, maxFontSizePerWidthSingleColumn);
@@ -357,8 +357,8 @@ export class SongScreen extends React.Component<IProps, IState> {
       fontSize,
       lineHeight: fontSize * 3,
       textPaddingTop: isSingleColumnStragedy ?
-        (this.calculateTextSectionHeight() - fontSize * 1.5 * (songSections.flat().length + songSections.length - 1)) * 2 / 5 :
-        (this.calculateTextSectionHeight() - fontSize * 1.5 * (songSections.slice(0, lastSectionInFirstColumnIndex + 1).flat().length + songSections.slice(0, lastSectionInFirstColumnIndex + 1).length - 1)) * 2 / 5
+        (this.calculateTextSectionHeight() - fontSize * 3 * (songSections.flat().length + songSections.length - 1)) * 2 / 5 :
+        (this.calculateTextSectionHeight() - fontSize * 3 * (songSections.slice(0, lastSectionInFirstColumnIndex + 1).flat().length + songSections.slice(0, lastSectionInFirstColumnIndex + 1).length - 1)) * 2 / 5
     });
 
     const textLinesHtml: any[][] = [];

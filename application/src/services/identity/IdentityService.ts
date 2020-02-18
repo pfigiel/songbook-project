@@ -31,6 +31,7 @@ export class IdentityService {
     }
 
     public async validateToken(): Promise<ValidateTokenResult> {
+        console.log("Validating token");
         const response = await authorizedFetch(config.api.routes.validateToken, {
             method: "POST"
         });
@@ -42,8 +43,6 @@ export class IdentityService {
                 isTokenValid: true,
                 user: responseBody
             } as ValidateTokenResult;
-        } else if (response.status === UNAUTHORIZED) {
-            return await this.refreshToken();
         }
 
         StorageService.remove(StorageService.JWT_TOKEN);
@@ -53,6 +52,7 @@ export class IdentityService {
     }
 
     public async refreshToken() {
+        console.log("Refreshing token");
         const refreshResponse = await fetch(config.api.routes.refreshToken, {
             method: "POST",
             headers: {
@@ -65,6 +65,7 @@ export class IdentityService {
 
         if (refreshResponse.status === OK) {
             const refreshResponseBody = (await refreshResponse.json()) as User;
+            console.log(refreshResponseBody);
             StorageService.set(StorageService.JWT_TOKEN, refreshResponseBody.token);
             StorageService.set(StorageService.REFRESH_TOKEN, refreshResponseBody.refreshToken);
             StorageService.set(StorageService.EMAIL, refreshResponseBody.email);

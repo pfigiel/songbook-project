@@ -8,7 +8,6 @@ import { App } from "./components/App";
 import * as serviceWorker from "./serviceWorker";
 
 addLocaleData([]);
-
 ReactDOM.render(
     <IntlProviderWrapper>
       <App />

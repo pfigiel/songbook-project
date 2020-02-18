@@ -10,8 +10,10 @@ export const authorizedFetch = async (url: string, options: any): Promise<Respon
     if (result.status === UNAUTHORIZED) {
         const identityService = new IdentityService();
         await identityService.refreshToken();
-        
+        console.log("Token refreshed");
+        options.headers = { ...options.headers, Authorization: `Bearer ${StorageService.get(StorageService.JWT_TOKEN)}` };
         result = await fetch(url, options);
+        console.log(result);
         if (result.status !== OK) {
             identityService.signOutClient();
         }
