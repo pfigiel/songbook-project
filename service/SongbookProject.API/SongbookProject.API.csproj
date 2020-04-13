@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>songbook_project_api</RootNamespace>
+    <RootNamespace>SongbookProject.API</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
-using SongbookProject.Entities;
 using SongbookProject.Entities.API;
 using SongbookProject.Services;
 
-namespace SongbookProject.Controllers
+namespace SongbookProject.API.Controllers
 {
     [Route("[controller]")]
     public class IdentityController : Controller

@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SongbookProject.Data;
-using SongbookProject.Entities;
 using SongbookProject.Model.ViewModels;
 using SongbookProject.Services;
 
-namespace SongbookProject.Controllers
+namespace SongbookProject.API.Controllers
 {
     public class SongsController : Controller
     {
