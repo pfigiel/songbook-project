@@ -1,8 +1,8 @@
-﻿using SongbookProject.Entities;
-using SongbookProject.Model.ViewModels;
+﻿using SongbookProject.Model.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SongbookProject.Model.Entities;
 
 namespace SongbookProject.Services
 {

@@ -1,12 +1,8 @@
-﻿using SongbookProject.Data;
-using SongbookProject.Model.Entities;
-using SongbookProject.Model.ViewModels;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
+using SongbookProject.Model.ViewModels;
 
-namespace SongbookProject.Entities
+namespace SongbookProject.Model.Entities
 {
     public class Song
     {

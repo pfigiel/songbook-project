@@ -9,9 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using SongbookProject.Data;
+using SongbookProject.Model;
+using SongbookProject.Model.Utils;
 using SongbookProject.Services;
-using SongbookProject.Utils;
 
 namespace SongbookProject.API
 {

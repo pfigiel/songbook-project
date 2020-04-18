@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using SongbookProject.Entities;
-using SongbookProject.Model.Entities;
-using SongbookProject.Utils;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using SongbookProject.Model.Entities;
+using SongbookProject.Model.Utils;
 
-namespace SongbookProject.Data
+namespace SongbookProject.Model
 {
     public class DbInitializer : IDbInitializer
     {

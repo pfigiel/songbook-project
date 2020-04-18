@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SongbookProject.Data;
+using SongbookProject.Model;
 using SongbookProject.Model.ViewModels;
 using SongbookProject.Services;
 

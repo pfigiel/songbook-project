@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongbookProject.Model", "So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongbookProject.Services", "SongbookProject.Services\SongbookProject.Services.csproj", "{195D183D-AF42-4DAA-B577-2FF4DC9A958F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongbookProject.IntegrationTests", "SongbookProject.IntegrationTests\SongbookProject.IntegrationTests.csproj", "{2EEDF471-C3DD-44B0-A9AB-DA10897BF0BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{195D183D-AF42-4DAA-B577-2FF4DC9A958F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{195D183D-AF42-4DAA-B577-2FF4DC9A958F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{195D183D-AF42-4DAA-B577-2FF4DC9A958F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EEDF471-C3DD-44B0-A9AB-DA10897BF0BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EEDF471-C3DD-44B0-A9AB-DA10897BF0BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EEDF471-C3DD-44B0-A9AB-DA10897BF0BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EEDF471-C3DD-44B0-A9AB-DA10897BF0BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

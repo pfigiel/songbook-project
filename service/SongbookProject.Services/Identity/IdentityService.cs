@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using SongbookProject.Utils;
-using SongbookProject.Data;
-using SongbookProject.Entities;
-using SongbookProject.Entities.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using SongbookProject.Model;
+using SongbookProject.Model.Entities;
+using SongbookProject.Model.Utils;
 using SongbookProject.Services.Identity;
 
 namespace SongbookProject.Services

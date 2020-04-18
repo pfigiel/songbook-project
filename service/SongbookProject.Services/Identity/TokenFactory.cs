@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using SongbookProject.Entities;
 using SongbookProject.Model.Entities;
 using System;
 using System.Collections.Generic;

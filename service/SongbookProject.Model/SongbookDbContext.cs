@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SongbookProject.Entities;
 using SongbookProject.Model.Entities;
 
-namespace SongbookProject.Data
+namespace SongbookProject.Model
 {
     public class SongbookDbContext : DbContext
     {

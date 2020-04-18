@@ -1,4 +1,4 @@
-﻿using SongbookProject.Entities;
+﻿using SongbookProject.Model.Entities;
 
 namespace SongbookProject.Services
 {

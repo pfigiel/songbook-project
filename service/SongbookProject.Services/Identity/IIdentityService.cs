@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using SongbookProject.Entities;
-using SongbookProject.Entities.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using APIUser = SongbookProject.Entities.API.APIUser;
+using APIUser = SongbookProject.Model.Entities.APIUser;
 
 namespace SongbookProject.Services
 {

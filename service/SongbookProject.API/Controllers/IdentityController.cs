@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using SongbookProject.Entities.API;
+using SongbookProject.Model.Entities;
 using SongbookProject.Services;
 
 namespace SongbookProject.API.Controllers

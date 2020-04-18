@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SongbookProject.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using SongbookProject.Model.Entities;
 
-namespace SongbookProject.Data
+namespace SongbookProject.Model
 {
     public class SongbookIdentityDbContext : IdentityDbContext
     {

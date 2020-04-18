@@ -1,10 +1,6 @@
-﻿using SongbookProject.Model.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 
-namespace SongbookProject.Entities
+namespace SongbookProject.Model.Entities
 {
     public class RefreshToken
     {
