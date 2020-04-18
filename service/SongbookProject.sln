@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongbookProject.API", "SongbookProject.API.csproj", "{B106D003-6653-464C-AAC8-F373F264DD71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongbookProject.API", "SongbookProject.API\SongbookProject.API.csproj", "{B106D003-6653-464C-AAC8-F373F264DD71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongbookProject.Model", "..\SongbookProject.Model\SongbookProject.Model.csproj", "{E1E6EF43-65BA-4D36-A00E-C310FFF158D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongbookProject.Model", "SongbookProject.Model\SongbookProject.Model.csproj", "{E1E6EF43-65BA-4D36-A00E-C310FFF158D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongbookProject.Services", "..\SongbookProject.Services\SongbookProject.Services.csproj", "{195D183D-AF42-4DAA-B577-2FF4DC9A958F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongbookProject.Services", "SongbookProject.Services\SongbookProject.Services.csproj", "{195D183D-AF42-4DAA-B577-2FF4DC9A958F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
